@@ -236,7 +236,24 @@ if (el.btnConfirm) {
       
       const mainItem = items[0];
       const mainPrice = Number(String(mainItem.price || mainItem.priceCOP || 0).replace(/[^\d]/g, ''));
-      const finalTotal = Number(el.total.textContent.replace(/[^\d]/g, '')) || (mainPrice * (mainItem.qty || 1));
+      
+      // Calcular total robusto en COP directamente desde el carrito para evitar errores de conversión y formato local
+      let subtotalCOP = 0;
+      for (const item of items) {
+        const itemPrice = Number(String(item.price || item.priceCOP || 0).replace(/[^\d]/g, '')) || 0;
+        const itemQty = Math.max(1, Number(item.qty) || 1);
+        subtotalCOP += itemPrice * itemQty;
+      }
+      
+      let discountPercent = 0;
+      const savedCoupon = localStorage.getItem('peloot_applied_coupon');
+      if (savedCoupon) {
+        const couponData = await validateCoupon(savedCoupon, currentUser || {});
+        if (couponData && couponData.valid) {
+          discountPercent = Number(couponData.discount) || 0;
+        }
+      }
+      const finalTotal = Math.round(subtotalCOP * (1 - discountPercent / 100));
 
       // Construcción segura del objeto Order
       const orderData = {
