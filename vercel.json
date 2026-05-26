@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/__/auth/:path*",
+      "destination": "https://pelootdata.firebaseapp.com/__/auth/:path*"
+    }
+  ]
+}

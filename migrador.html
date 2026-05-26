@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Migrador a Firebase - PeLoot</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 40px; color: #333; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    button { background: #5BB8F5; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #4AA7E4; }
+    #log { background: #1e1e1e; color: #00ff00; padding: 20px; border-radius: 8px; font-family: monospace; margin-top: 20px; height: 400px; overflow-y: auto; white-space: pre-wrap; }
+    .status { font-weight: bold; margin-bottom: 20px; }
+  </style>
+  <link rel='stylesheet' href='css/epic-loot.css' />
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Migrador de Datos a Firebase</h1>
+    <p class="status">Sube los 26 productos y sus imágenes a tu nuevo proyecto.</p>
+    <button id="start">Comenzar Migración</button>
+    <div id="log">Esperando para iniciar...\n</div>
+  </div>
+
+  <!-- Cargar los datos actuales -->
+  <script src="js/data.js"></script>
+  
+  <script type="module">
+    import { db, storage } from './js/firebase-config.js';
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+
+    const logEl = document.getElementById('log');
+    const btn = document.getElementById('start');
+
+    const log = (msg) => { 
+      logEl.textContent += msg + '\n'; 
+      logEl.scrollTop = logEl.scrollHeight;
+      console.log(msg); 
+    };
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = "Migrando...";
+      
+      try {
+        log('Empezando migración...');
+        if (typeof products === 'undefined') throw new Error('No se encontró el array products en data.js');
+        log(`Se encontraron ${products.length} productos en data.js.\n`);
+
+        let successCount = 0;
+
+        for (const p of products) {
+          log(`📦 Procesando: ${p.name} [${p.id}]`);
+          
+          // 1. Obtener imagen local
+          log(`  ⬇️ Descargando imagen local: ${p.image}`);
+          const imgRes = await fetch(p.image);
+          if (!imgRes.ok) {
+            log(`  ⚠️ Advertencia: No se encontró la imagen ${p.image}. Se subirá sin imagen.`);
+          }
+          let downloadUrl = "";
+
+          if (imgRes.ok) {
+            const blob = await imgRes.blob();
+            // 2. Subir a Firebase Storage
+            const ext = p.image.split('.').pop() || 'png';
+            const storagePath = `products/${p.category}/${p.id}.${ext}`;
+            const storageRef = ref(storage, storagePath);
+            
+            log(`  ☁️ Subiendo a Storage: ${storagePath}`);
+            await uploadBytes(storageRef, blob);
+            downloadUrl = await getDownloadURL(storageRef);
+            log(`  🔗 URL obtenida: ${downloadUrl.substring(0, 40)}...`);
+          }
+
+          // 3. Guardar en Firestore
+          const docRef = doc(db, 'products', p.id);
+          const data = {
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            category: p.category,
+            description: p.description,
+            imageUrl: downloadUrl,
+            active: true
+          };
+
+          log(`  💾 Guardando en Firestore...`);
+          await setDoc(docRef, data);
+          log(`  ✅ Completado!\n`);
+          successCount++;
+        }
+
+        log('====================================');
+        log(`�x}0 ¡MIGRACI�N COMPLETADA! (${successCount}/${products.length})`);
+        log('Puedes avisar a Antigravity para que conecte el sitio a Firebase.');
+        btn.textContent = "¡Migración Exitosa!";
+        btn.style.background = "#5EC997";
+      } catch (err) {
+        log(`\n❌ ERROR FATAL: ${err.message}`);
+        console.error(err);
+        btn.textContent = "Error";
+        btn.style.background = "#ff4444";
+      }
+    });
+  </script>
+</body>
+</html>
+
+

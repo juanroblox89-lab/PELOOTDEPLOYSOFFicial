@@ -1,0 +1,23 @@
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Project specific
+node_modules/
+dist/
+build/
+.env
+*.bak
+implementation_plan.md
+task.md
+walkthrough.md
+memory.md

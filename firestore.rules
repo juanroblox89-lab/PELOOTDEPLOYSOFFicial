@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función de ayuda para verificar si es administrador
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true || 
+        request.auth.token.email == 'juanroblox89@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Configuración global: Lectura pública, escritura solo administradores
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Productos: Lectura pública, escritura solo administradores
+    match /products/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Perfiles de Usuario: Solo el dueño o un administrador
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.email == request.auth.token.email; // Validación de integridad
+    }
+    
+    // Pedidos (Hardened):
+    match /orders/{orderId} {
+      // Crear pedido: Usuario autenticado, debe ser el dueño, campos obligatorios validados
+      allow create: if request.auth != null 
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.total is number
+        && request.resource.data.fullName is string
+        && request.resource.data.phone is string
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time; // Obliga a usar Server Timestamp
+
+      // Leer pedido: Solo el dueño o un administrador
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+
+      // Actualizar pedido: Solo el administrador puede cambiar estados (excepto cancelar)
+      // El usuario solo puede cancelar su propio pedido si está en estado pendiente
+      allow update: if request.auth != null && (
+        isAdmin() || (
+          resource.data.userId == request.auth.uid && 
+          request.resource.data.status == 'cancelled' &&
+          resource.data.status == 'pending'
+        )
+      );
+
+      // Eliminar pedido: Prohibido para usuarios (solo vía consola/admin)
+      allow delete: if isAdmin();
+    }
+
+    // Carrito en la Nube: Sincronización privada por UID
+    match /carts/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Reseñas de Productos: Lectura pública, creación abierta con validación, modificación/borrado admin
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.productId is string
+        && request.resource.data.userName is string;
+      allow update, delete: if isAdmin();
+    }
+
+    // Colección de Administradores (Opcional, para control extra)
+    match /admins/{adminId} {
+      allow read: if request.auth != null && request.auth.uid == adminId;
+      allow write: if false; // Solo vía consola de Firebase
+    }
+  }
+}

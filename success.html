@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>¡Compra Exitosa! | PeLoot — Premium Gaming Brand</title>
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='css/epic-loot.css' />
+</head>
+<body class="product-page">
+  <header class="header-premium">
+    <div class="header-container" style="justify-content: center;">
+      <a href="index" class="logo-gaming">
+        <img src="assets/images/logo/peloot.png" alt="PeLoot">
+      </a>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 120px; padding-bottom: 80px; display: flex; justify-content: center;">
+    <div class="success-card-premium" style="max-width: 600px; width: 100%; background: white; padding: 48px; border-radius: var(--radius-xl); text-align: center; box-shadow: var(--shadow-lg); border: 1px solid var(--border-light);">
+      <div style="font-size: 5rem; margin-bottom: 24px;">🎉</div>
+      <h1 style="font-size: 2.5rem; margin-bottom: 12px; line-height: 1.1;">¡Misión Completada!</h1>
+      <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 40px; line-height: 1.6;">Tu pedido ha sido registrado con éxito. Estamos preparando tu loot épico para que llegue pronto a tus manos.</p>
+      
+      <!-- Redundant tracking link removed -->
+
+      <div style="background: #E8F5E9; border: 2px solid #61C454; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px; text-align: left;">
+        <h3 style="color: #2E7D32; font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          🟢 PAGO VERIFICADO AUTOMÁTICAMENTE
+        </h3>
+        <p style="color: #2E7D32; font-size: 0.9rem; font-weight: 600; line-height: 1.5; margin: 0;">
+          ¡Tu pago se valida de forma 100% automática e instantánea! 
+          <br><br>
+          <strong>No necesitas enviar ningún comprobante ni captura de pantalla por WhatsApp.</strong> Tu pedido ya se actualizó al estado <em>"🛠️ Preparando"</em> y nuestro equipo está alistando tu Loot.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <a href="#" id="btn-dynamic-pay" class="btn-primary-gaming" style="width: 100%; justify-content: center; padding: 20px; font-size: 1.2rem; background: #009ee3; border-color: #009ee3; color: white; display: none; margin-bottom: 8px;">
+          Pagar con MercadoPago 💳
+        </a>
+        <a href="#" id="btn-track-order" class="btn-primary-gaming" style="width: 100%; justify-content: center; padding: 20px; font-size: 1.2rem; background: var(--primary-blue); border-color: var(--primary-blue); color: white; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+          Seguir Mi Pedido 🛰️
+        </a>
+        <a href="orders" class="btn-secondary-gaming" style="width: 100%; justify-content: center; padding: 16px;">
+          Ver Mis Pedidos 📦
+        </a>
+        <a href="index" class="btn-secondary-gaming" style="width: 100%; justify-content: center; padding: 16px;">
+          Volver a la Tienda 🏠
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-gaming" style="margin-top: 40px; padding-bottom: 40px;">
+    <div class="container">
+      <div style="padding-top: 32px; border-top: 1px solid var(--bg-section); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;">
+        <p style="font-weight: 700; color: var(--text-muted);">&copy; 2026 PeLoot — Premium Gaming Brand 🎮</p>
+        <div class="payment-badges-gaming">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getUserProfile } from './js/firebase-service.js';
+    import { getPaymentLink } from './js/store-service.js';
+    import { onAuth } from './js/auth-service.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('order_id');
+    const paymentUrl = urlParams.get('payment_url');
+    const total = urlParams.get('total') || '---';
+    const btnView = document.getElementById('btn-view-order');
+    const btnTrack = document.getElementById('btn-track-order');
+    
+    console.log("[PeLoot] Success Page OrderID:", orderId, "PaymentURL:", paymentUrl);
+ 
+    if (orderId) {
+      const trackUrl = `tracking?id=${orderId}`;
+      if (btnTrack) {
+        btnTrack.href = trackUrl;
+      }
+      if (btnView) {
+        btnView.href = trackUrl;
+        btnView.addEventListener('click', (e) => {
+          window.location.href = trackUrl;
+        });
+      }
+      
+      // Cargar link de pago dinámico o redirigir automáticamente
+      const payBtn = document.getElementById('btn-dynamic-pay');
+      if (paymentUrl) {
+        if (payBtn) {
+          payBtn.href = paymentUrl;
+          payBtn.style.display = 'flex';
+          payBtn.innerHTML = 'Redirigiendo a Mercado Pago... 💳';
+        }
+        // Redirigir automáticamente en 1.5s
+        setTimeout(() => {
+          window.location.href = paymentUrl;
+        }, 1500);
+      } else {
+        onAuth(user => {
+          if (user) {
+            getUserProfile(user.uid).then(profile => {
+              getPaymentLink(profile || { orderCount: 0 }).then(link => {
+                if (payBtn && link) {
+                  payBtn.href = link;
+                  payBtn.style.display = 'flex';
+                }
+              });
+            });
+          }
+        });
+      }
+    } else {
+      if (btnView) btnView.style.display = 'none';
+      if (btnWa) btnWa.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

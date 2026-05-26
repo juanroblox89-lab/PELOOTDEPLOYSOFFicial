@@ -1,0 +1,5 @@
+Coloca aquí el banner principal:
+- banner-placeholder.png (1200x400px)
+
+Este es el banner que aparece en la página de inicio.
+Debe ser horizontal y llamativo con los colores de la marca.

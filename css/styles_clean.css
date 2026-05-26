@@ -1,0 +1,100 @@
+﻿/* ==========================================
+   PELOOT - CSS MEJORADO 2.0
+   DiseÃ±o abrazable, suave y brillante
+========================================== */
+
+/* ==========================================
+   RESET & BASE
+========================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* ===========================================
+     PALETA OFICIAL PELOOT â€” â€œPeluchescoâ€
+     Azul cielo suave + crema cÃ¡lida + amarillo
+     =========================================== */
+
+  /* Azul principal â€” mÃ¡s suave, tipo cielo */
+  --primary-blue: #5BB8F5;         /* Sky blue peluchesco â€” antes #2196F3 */
+  --primary-blue-dark: #2E9CD8;    /* Azul medio */
+  --primary-blue-light: #A8D8F0;   /* Azul bebÃ© claro */
+
+  /* Amarillo cÃ¡lido (sin cambios) */
+  --primary-yellow: #FFD93D;
+  --primary-yellow-dark: #FFBF00;
+  --primary-yellow-light: #FFF3A0;
+
+  /* Rojo suave rosado */
+  --primary-red: #FF7B8A;
+  --primary-red-dark: #F74E64;
+  --primary-red-light: #FFB3BC;
+
+  /* Accentos suaves nuevos */
+  --accent-pink: #FFB8D0;          /* Rosa peluche */
+  --accent-mint: #B8EAD8;          /* Menta suave */
+  --accent-green: #5EC997;         /* Verde suave */
+  --accent-green-dark: #3DAB7B;
+  --accent-green-light: #8FD9B8;
+
+  /* Fondos cÃ¡lidos y suaves â€” crema en vez de azul frÃ­o */
+  --bg-main: #FFF9F5;              /* Crema rosado â€” antes #F5F9FF */
+  --bg-card: #FFFFFF;
+  --bg-soft: #FFF0F5;              /* Rosa muy suave para cards especiales */
+
+  /* Textos con tono cÃ¡lido */
+  --text-dark: #3E2D35;            /* MarrÃ³n oscuro cÃ¡lido â€” antes #2D3436 */
+  --text-medium: #7A6070;          /* MarrÃ³n medio cÃ¡lido */
+  --text-light: #A48898;           /* Rosa medio oscurecido para contraste */
+
+  /* Efectos con el nuevo azul cielo */
+  --shadow-soft: 0 4px 20px rgba(91, 184, 245, 0.15);
+  --shadow-medium: 0 8px 30px rgba(91, 184, 245, 0.2);
+  --shadow-strong: 0 12px 40px rgba(91, 184, 245, 0.25);
+  --glow: 0 0 20px rgba(91, 184, 245, 0.3);
+
+  /* Bordes suaves */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 30px;
+  --radius-xl: 40px;
+
+  /* Transiciones */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Sidebar Modern Styles */
+  --sidebar-width: 320px;
+  --sidebar-bg: rgba(255, 255, 255, 0.98);
+  --sidebar-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   MODERN SIDEBAR (ChatGPT Style)
+   ========================================== */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(62, 45, 53, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1900;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-modern {
+  position: fixed;
+  top: 0;
+  right: calc(-1 * var(--sidebar-width));
+  width: var(--sidebar-width);

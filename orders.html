@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mis Pedidos | PeLoot — Premium Gaming Brand</title>
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='css/epic-loot.css' />
+</head>
+<body class="product-page">
+  <header class="header-premium">
+    <div class="container header-container">
+      <button class="hamburger-gaming" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index" class="logo-gaming">
+        <img src="assets/images/logo/peloot.png" alt="PeLoot">
+      </a>
+      <nav id="main-nav" class="nav-gaming">
+        <a href="index">Inicio</a>
+        <a href="products">Productos</a>
+        <a href="orders">Mis Pedidos</a>
+      </nav>
+      <div class="header-actions-gaming">
+        <div class="user-action" id="btn-open-auth">
+          <img src="assets/images/logo/favicon.png" alt="User" id="header-user-img">
+        </div>
+        <a href="cart" class="cart-action">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-inner-main" style="padding-top: 100px; padding-bottom: 80px;">
+    <div class="page-intro" style="margin-bottom: 48px;">
+      <h1 class="page-inner-title">Mis Pedidos 📦</h1>
+      <p style="color: var(--text-muted); font-weight: 600;">Historial de tus compras en PeLoot.</p>
+    </div>
+
+    <div id="orders-container" class="orders-grid" style="display: grid; gap: 20px;">
+      <!-- Skeletons -->
+      <div class="skeleton" style="height: 120px; background: var(--bg-section); border-radius: 20px;"></div>
+      <div class="skeleton" style="height: 120px; background: var(--bg-section); border-radius: 20px;"></div>
+    </div>
+  </main>
+
+  <footer class="footer-gaming">
+    <div class="container">
+      <div class="footer-bottom-gaming">
+        <p>&copy; 2026 PeLoot. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/cart.js"></script>
+  <script type="module">
+    import { onAuth } from './js/auth-service.js';
+    import { getOrdersByUser } from './js/firebase-service.js';
+    import { initHeaderAndAuth } from './js/ui-init.js';
+    import { CURRENCIES, convertPrice, getGlobalSettings } from './js/store-service.js';
+
+    initHeaderAndAuth();
+
+    const container = document.getElementById('orders-container');
+
+    onAuth(async user => {
+      if (!user) {
+        container.innerHTML = `
+          <div style="text-align:center; padding: 60px 20px; background:white; border-radius:32px; border:1px solid var(--border-light);">
+            <h3 style="margin-bottom:16px;">Inicia sesión para ver tus pedidos</h3>
+            <p style="color:var(--text-muted); margin-bottom:24px;">Necesitas estar autenticado para acceder a tu historial.</p>
+            <button onclick="document.getElementById('btn-open-auth').click()" class="btn-primary-gaming">Iniciar Sesión</button>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        console.log('[PeLoot] Buscando pedidos para UID:', user.uid);
+        const orders = await getOrdersByUser(user.uid);
+        const settings = await getGlobalSettings();
+        
+        if (orders.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center; padding: 60px 20px; background:white; border-radius:32px; border:1px solid var(--border-light);">
+              <h3 style="margin-bottom:16px;">Aún no tienes pedidos</h3>
+              <p style="color:var(--text-muted); margin-bottom:24px;">¡Explora el catálogo y consigue tu primer Loot!</p>
+              <a href="products" class="btn-primary-gaming">Ver Productos</a>
+            </div>
+          `;
+          return;
+        }
+
+        function formatOrderPrice(amount, currencyCode) {
+          const currency = CURRENCIES.find(c => c.code === currencyCode) || CURRENCIES[0];
+          const maxDigits = (currencyCode === 'COP' || currencyCode === 'CLP' || currencyCode === 'PYG') ? 0 : 2;
+          const formatted = amount.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
+          return `${currency.symbol}${formatted} ${currency.code}`;
+        }
+
+        container.innerHTML = orders.map(o => {
+          const date = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('es-CO') : 'Reciente';
+          const itemsCount = o.items ? o.items.reduce((sum, i) => sum + i.qty, 0) : (o.qty || 1);
+          const displayPriceCOP = o.total || (o.productPrice * (o.qty || 1)) || 0;
+          const displayPriceConverted = convertPrice(displayPriceCOP, o.currency || 'COP', settings.exchangeRates);
+          
+          let statusLabel = '⌛ Sin Confirmar';
+          let badgeBg = '#FFF3CD';
+          let badgeColor = '#856404';
+
+          if (o.status === 'confirmed') {
+            statusLabel = '🛠️ Preparando';
+            badgeBg = '#D4EDDA';
+            badgeColor = '#155724';
+          } else if (o.status === 'shipped') {
+            statusLabel = '🚚 En Camino';
+            badgeBg = '#CCE5FF';
+            badgeColor = '#004085';
+          } else if (o.status === 'cancelled') {
+            statusLabel = '❌ Cancelado';
+            badgeBg = '#F8D7DA';
+            badgeColor = '#721C24';
+          }
+
+          const payButton = (o.status === 'pending')
+            ? `<a href="${o.paymentUrl || '#'}" data-order-id="${o.id}" target="_blank" class="btn-primary-gaming pay-btn-dynamic" style="padding: 8px 16px; font-size: 0.8rem; background: var(--accent-green); border-color: var(--accent-green); box-shadow: 0 4px 10px rgba(97, 196, 84, 0.3); text-decoration: none; display: flex; align-items: center; gap: 6px; color: white;">💳 Pagar Ahora</a>`
+            : '';
+
+          let infoBoxHtml = '';
+          if (o.status === 'pending') {
+            infoBoxHtml = `
+              <div class="unconfirmed-instructions" style="width: 100%; margin-top: 16px; background: #E3F2FD; border: 1.5px dashed #2EA8FF; border-radius: 16px; padding: 16px; font-size: 0.85rem; color: #1565C0; line-height: 1.5; text-align: left;">
+                <div style="font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.9rem; color: #1565C0;">
+                  💳 Completar tu Pago:
+                </div>
+                Tu pago se valida de forma 100% automática e instantánea. Si aún no has realizado el pago en línea de tu pedido, puedes completarlo de forma segura a continuación:
+                
+                <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                  ${payButton}
+                  <a href="https://wa.me/3136374267?text=${encodeURIComponent(`¡Hola PeLoot! 🎮 Necesito soporte con mi pedido #${o.id.slice(0,8).toUpperCase()}`)}" 
+                     target="_blank" 
+                     class="btn-primary-gaming" 
+                     style="padding: 8px 16px; font-size: 0.8rem; background: transparent; border: 1px solid #1565C0; color: #1565C0; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                     💬 Ayuda de Soporte
+                  </a>
+                </div>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="order-card-premium" style="background: white; border-radius: 24px; padding: 24px; border: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 20px; transition: transform 0.2s ease; box-shadow: var(--shadow-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; width: 100%;">
+                <div style="display: flex; gap: 20px; align-items: center;">
+                  <div style="width: 60px; height: 60px; background: var(--bg-section); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📦</div>
+                  <div>
+                    <h4 style="font-size: 1.1rem; margin-bottom: 4px; color: var(--text-main);">Pedido #${o.id.slice(0,8).toUpperCase()}</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${date} • ${itemsCount} producto(s)</p>
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                  <div style="text-align: right;">
+                    <div style="font-weight: 900; font-size: 1.2rem; color: var(--text-main);">${formatOrderPrice(displayPriceConverted, o.currency || 'COP')}</div>
+                    <div class="status-badge" style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 6px 12px; border-radius: 20px; display: inline-block; margin-top: 4px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid rgba(0,0,0,0.03);">
+                      ${statusLabel}
+                    </div>
+                  </div>
+                  <a href="tracking?id=${o.id}" class="btn-secondary-gaming" style="padding: 12px 20px; font-size: 0.85rem; text-decoration: none; display: inline-block;">Detalles</a>
+                </div>
+              </div>
+              
+              ${infoBoxHtml}
+            </div>
+          `;
+        }).join('');
+
+        // Añadir comportamiento dinámico a los botones de pago
+        document.querySelectorAll('.pay-btn-dynamic').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const href = btn.getAttribute('href');
+            if (href === '#' || !href) {
+              e.preventDefault();
+              const orderId = btn.dataset.orderId;
+              btn.innerHTML = 'Generando... ⏳';
+              btn.style.opacity = '0.7';
+              btn.style.pointerEvents = 'none';
+              
+              const order = orders.find(ord => ord.id === orderId);
+              if (order) {
+                const link = await generateDynamicPaymentLink(order);
+                if (link) {
+                  btn.setAttribute('href', link);
+                  btn.innerHTML = '💳 Pagar Ahora';
+                  btn.style.opacity = '1';
+                  btn.style.pointerEvents = 'auto';
+                  window.open(link, '_blank');
+                } else {
+                  btn.innerHTML = '⚠️ Reintentar';
+                  btn.style.opacity = '1';
+                  btn.style.pointerEvents = 'auto';
+                }
+              }
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error('[PeLoot] Error cargando pedidos:', err);
+        let msg = 'Lo sentimos, hubo un error al cargar tus pedidos.';
+        if (err.message && err.message.toLowerCase().includes('index')) {
+          msg = `<strong>Falta un índice en Firebase.</strong><br><br>Por favor, crea el índice compuesto en la consola de Firebase para que los pedidos se puedan filtrar correctamente.`;
+        }
+        
+        container.innerHTML = `
+          <div style="max-width:500px; margin: 40px auto; padding: 32px; background:white; border-radius:32px; border:1px solid rgba(255, 77, 77, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.05); text-align:center;">
+            <div style="width:64px; height:64px; background:#fff1f1; border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:1.8rem;">⚙️</div>
+            <h3 style="margin-bottom:12px; color:#2D2D2D;">Configuración Requerida</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5; margin-bottom:24px;">${msg}</p>
+            <div style="background:#f8f9fa; padding:12px; border-radius:12px; font-family:monospace; font-size:0.75rem; color:#666; word-break:break-all; margin-bottom:20px; border:1px dashed #ddd;">
+              ${err.message}
+            </div>
+            <a href="https://console.firebase.google.com/project/pelootdata/firestore/indexes" target="_blank" class="btn-primary-gaming" style="display:inline-block; padding:12px 24px;">Ir a Consola Firebase</a>
+          </div>
+        `;
+      }
+    });
+
+    async function generateDynamicPaymentLink(order) {
+      try {
+        console.log('[PeLoot] Generando link de pago dinámico para pedido:', order.id);
+        let discountPercent = 0;
+        const subtotalCOP = order.items ? order.items.reduce((sum, i) => sum + ((i.price || 0) * (i.qty || 1)), 0) : 0;
+        const totalCOP = order.total || subtotalCOP;
+        if (subtotalCOP > 0 && totalCOP < subtotalCOP) {
+          discountPercent = Math.round(((subtotalCOP - totalCOP) / subtotalCOP) * 100);
+          console.log(`[PeLoot] Descuento detectado del pedido: ${discountPercent}%`);
+        }
+
+        const response = await fetch('/api/create-preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: order.id,
+            fullName: order.fullName || 'Cliente PeLoot',
+            email: order.email || 'cliente@peloot.com',
+            items: order.items || [{ id: order.productId || '', name: order.productName || 'Peluche PeLoot', price: order.productPrice || 0, qty: order.qty || 1 }],
+            currency: order.currency || 'COP',
+            discountPercent: discountPercent
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          try {
+            const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js");
+            const { db } = await import("./js/firebase-config.js");
+            await updateDoc(doc(db, 'orders', order.id), { paymentUrl: data.init_point });
+          } catch (e) { console.error('[PeLoot] Error guardando link de pago:', e); }
+          return data.init_point;
+        }
+      } catch (err) {
+        console.error('[PeLoot] Error creando preferencia dinámica:', err);
+      }
+      return '';
+    }
+  </script>
+</body>
+</html>

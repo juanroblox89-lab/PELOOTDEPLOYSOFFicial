@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PeLoot Admin | Gestión Premium</title>
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.png">
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel='stylesheet' href='css/epic-loot.css?v=1.11' />
+</head>
+<body>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div id="login-page">
+  <form class="login-card" id="login-form">
+    <div class="logo-wrap">
+      <img src="assets/images/logo/peloot.png" alt="PeLoot">
+    </div>
+    <h1>Panel Admin</h1>
+    <p class="subtitle">Acceso exclusivo para administradores de PeLoot</p>
+    
+    <div class="field" style="margin-top: 2rem;">
+      <button type="button" class="btn-primary" id="btn-login" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1 .67-2.28 1.07-3.71 1.07-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.11c-.22-.67-.35-1.39-.35-2.11s.13-1.44.35-2.11V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.83z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+        </svg>
+        Entrar con Google (Admin)
+      </button>
+    </div>
+    <p class="login-error" id="login-error">⚠️ Acceso denegado. Contacta al soporte.</p>
+  </form>
+</div>
+
+<!-- ==================== ADMIN PAGE ==================== -->
+<div id="admin-page" style="display: none;">
+
+  <!-- Topbar -->
+  <div class="admin-topbar">
+    <div class="brand">
+      <img src="assets/images/logo/peloot.png" alt="PeLoot">
+      <span>PeLoot Admin</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-badge" id="topbar-pending-badge">0 pedidos pendientes</span>
+      <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="admin-tabs">
+    <button class="tab-btn active" data-tab="products">🛠️ Productos</button>
+    <button class="tab-btn" data-tab="orders">📦 Pedidos <span class="badge-count" id="orders-badge">0</span></button>
+    <button class="tab-btn" data-tab="categories">🏷️ Categorías</button>
+    <button class="tab-btn" data-tab="settings">⚙️ Ajustes</button>
+    <button class="tab-btn" data-tab="users">👥 Usuarios</button>
+  </div>
+
+  <!-- Content -->
+  <div class="admin-content">
+
+    <!-- ===== TAB: PRODUCTOS ===== -->
+    <section class="tab-panel active" id="products-section">
+      <div class="section-header">
+        <div>
+          <h2>Gestión de Productos</h2>
+          <p>Edita, crea o elimina productos del catálogo</p>
+        </div>
+        <button class="btn-create" id="btn-create-product">+ Nuevo Producto</button>
+      </div>
+
+      <div class="stats-bar" id="products-stats">
+        <div class="stat-card">
+          <div class="stat-value stat-total">—</div>
+          <div class="stat-label">Total productos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value stat-active">—</div>
+          <div class="stat-label">Activos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value stat-cats">—</div>
+          <div class="stat-label">Categorías</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <input class="search-input" type="text" id="prod-search" placeholder="🔍 Buscar producto...">
+        <button class="filter-btn active" data-cat="">Todos</button>
+        <button class="filter-btn" data-cat="bloxfruits">Blox Fruits</button>
+        <button class="filter-btn" data-cat="clashroyale">Clash Royale</button>
+        <button class="filter-btn" data-cat="pvz">PvZ</button>
+        <button class="filter-btn" data-cat="fnaf">FNAF</button>
+      </div>
+
+      <div class="products-admin-grid" id="products-grid">
+        <div class="loading-spinner"><div class="spinner"></div> Cargando productos...</div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: PEDIDOS ===== -->
+    <section class="tab-panel" id="orders-section">
+      <div class="section-header">
+        <div>
+          <h2>Gestión de Pedidos</h2>
+          <p>Administra las ventas y estados de envío</p>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-value stat-pending" id="stat-pending">0</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-status="pending">Pendientes</button>
+        <button class="filter-btn" data-status="confirmed">Confirmados</button>
+        <button class="filter-btn" data-status="shipped">Enviados</button>
+        <button class="filter-btn" data-status="">Todos</button>
+      </div>
+
+      <div class="orders-admin-list" id="orders-list">
+        <div class="loading-spinner"><div class="spinner"></div> Cargando pedidos...</div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: CATEGORÍAS ===== -->
+    <section class="tab-panel" id="categories-section">
+      <div class="section-header">
+        <div>
+          <h2>Categorías</h2>
+          <p>Organiza tus productos por grupos y configura links globales</p>
+        </div>
+        <button class="btn-create" id="btn-create-cat">+ Nueva Categoría</button>
+      </div>
+      <div class="cat-admin-grid" id="cat-list">
+        <div class="loading-spinner"><div class="spinner"></div> Cargando categorías...</div>
+      </div>
+    </section>
+
+
+
+    <!-- ===== TAB: AJUSTES ===== -->
+    <section class="tab-panel" id="settings-section">
+      <div class="section-header">
+        <div>
+          <h2>Ajustes Globales</h2>
+          <p>Configuración general de la tienda y divisas</p>
+        </div>
+        <button class="btn-primary" id="btn-save-settings">💾 Guardar Todo</button>
+      </div>
+      
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>🔥 Promociones y Branding</h3>
+          <div class="form-group">
+            <label>Cupón Activo</label>
+            <input type="text" id="set-coupon-code" placeholder="Ej: PELOOT10">
+          </div>
+          <div class="form-group">
+            <label>% Descuento</label>
+            <input type="number" id="set-coupon-discount" placeholder="10">
+          </div>
+          <div class="form-group">
+            <label>Link WhatsApp (Primer Comprador)</label>
+            <input type="url" id="set-link-first" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>Link WhatsApp (Cliente Frecuente)</label>
+            <input type="url" id="set-link-regular" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>URL Logo Personalizado</label>
+            <input type="url" id="set-logo-url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>URL Banner Principal</label>
+            <input type="url" id="set-banner-url" placeholder="https://...">
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>🌎 Tasas de Cambio (1 USD =)</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">Define el valor de 1 dólar en cada moneda local.</p>
+          <div class="rates-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label>COP (Colombia)</label>
+              <input type="number" id="rate-COP" placeholder="4000">
+            </div>
+            <div class="form-group">
+              <label>MXN (México)</label>
+              <input type="number" id="rate-MXN" placeholder="17">
+            </div>
+            <div class="form-group">
+              <label>ARS (Argentina)</label>
+              <input type="number" id="rate-ARS" placeholder="800">
+            </div>
+            <div class="form-group">
+              <label>CLP (Chile)</label>
+              <input type="number" id="rate-CLP" placeholder="900">
+            </div>
+            <div class="form-group">
+              <label>PEN (Perú)</label>
+              <input type="number" id="rate-PEN" placeholder="3.7">
+            </div>
+            <div class="form-group">
+              <label>UYU (Uruguay)</label>
+              <input type="number" id="rate-UYU" placeholder="39">
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" style="border: 2px solid rgba(46, 168, 255, 0.2);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3 style="margin:0;">💳 Integración Mercado Pago</h3>
+            <span class="status-badge" style="font-size: 0.75rem; font-weight: 800; background: #E8F5E9; color: #2E7D32; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(46, 125, 50, 0.1);">🟢 Webhook & IPN</span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; line-height:1.4;">
+            El webhook recibe notificaciones de transacciones automáticas e instantáneas de Mercado Pago y cambia los pedidos pagados al estado <strong>🛠️ Preparando</strong> sin intervención manual.
+          </p>
+          
+          <div class="form-group" style="margin-bottom:1.5rem;">
+            <label style="display:flex; justify-content:space-between; align-items:center;">
+              <span>URL de Notificación (Webhook/IPN)</span>
+              <span style="font-size:0.7rem; color:#2EA8FF; font-weight:800; cursor:pointer;" onclick="navigator.clipboard.writeText('https://peloot.shop/api/mercadopago-webhook'); showToast('¡Copia exitosa! 📋');">📋 Copiar</span>
+            </label>
+            <input type="text" readonly value="https://peloot.shop/api/mercadopago-webhook" style="background:#f8f9fa; border:1px solid #ddd; font-family:monospace; font-size:0.75rem; font-weight:700; color:#555; padding:12px; border-radius:8px; width:100%; cursor:pointer;" onclick="this.select(); navigator.clipboard.writeText(this.value); showToast('¡Copia exitosa! 📋');">
+          </div>
+
+          <div style="background:#E3F2FD; border-radius:16px; padding:16px; font-size:0.75rem; color:#1565C0; line-height:1.5; border:1px solid rgba(21, 101, 192, 0.1);">
+            <div style="font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+              ⚡ Configuración en tu panel de Mercado Pago:
+            </div>
+            1. Entra a <strong>Desarrolladores -> Webhooks</strong> o <strong>IPN</strong> en Mercado Pago.<br>
+            2. Selecciona tu aplicación <strong>PeLoot Store</strong>.<br>
+            3. Pega la URL de arriba en <strong>URL de producción</strong> o <strong>URL de notificación</strong>.<br>
+            4. Activa el evento de <strong>payments (pagos)</strong>.<br>
+            5. Haz clic en guardar y ¡listo! Los pagos se confirmarán solos al instante.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TAB: USUARIOS ===== -->
+    <section class="tab-panel" id="users-section">
+      <div class="section-header">
+        <div>
+          <h2>Usuarios y Clientes</h2>
+          <p>Registro de personas que han interactuado con la tienda</p>
+        </div>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Avatar</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Moneda</th>
+              <th>Pedidos</th>
+              <th>Rol</th>
+              <th>Último Acceso</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <tr><td colspan="7" style="text-align:center;">Cargando usuarios...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+<!-- ==================== MODAL: PRODUCTO ==================== -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Editar Producto</h3>
+      <button class="modal-close" id="modal-close-product">✖</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="prod-id">
+
+      <p class="form-section-title">Información básica</p>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="prod-name">Nombre del producto</label>
+          <input type="text" id="prod-name" placeholder="Ej: Peluche Blox Fruits Dough">
+        </div>
+        <div class="form-group">
+          <label for="prod-price">Precio (COP)</label>
+          <input type="number" id="prod-price" placeholder="Ej: 75000">
+        </div>
+        <div class="form-group">
+          <label for="prod-category">Categoría</label>
+          <select id="prod-category">
+            <option value="bloxfruits">Blox Fruits</option>
+            <option value="clashroyale">Clash Royale</option>
+            <option value="pvz">Plants vs Zombies</option>
+            <option value="fnaf">FNAF</option>
+            <option value="otros">Otros</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label for="prod-description">Descripción</label>
+          <textarea id="prod-description" rows="3" placeholder="Descripción del producto..."></textarea>
+        </div>
+      </div>
+
+      <p class="form-section-title">Imágenes</p>
+      <div class="form-group">
+        <label for="prod-imageUrl">URL de imagen principal</label>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <input type="url" id="prod-imageUrl" placeholder="https://..." style="flex:1;min-width:140px;">
+          <button type="button" id="btn-pick-main-img" class="btn-sm btn-edit" style="white-space:nowrap;">🖼️ Galería</button>
+          <label for="upload-main-img" class="btn-sm btn-edit" style="white-space:nowrap;cursor:pointer;" title="Subir desde dispositivo">
+            📱 Subir
+            <input type="file" id="upload-main-img" accept="image/*" style="display:none;">
+          </label>
+        </div>
+        <div id="prod-img-preview" style="margin-top:0.5rem;display:none;position:relative;width:fit-content;">
+          <img id="prod-img-preview-el" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="max-height:80px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:var(--bg2);padding:4px;display:block;">
+          <button type="button" id="btn-remove-main-img" title="Quitar imagen"
+            style="position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:#FF4757;color:white;border:none;font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(255,71,87,0.4);">
+            −
+          </button>
+        </div>
+        <p id="upload-main-progress" style="font-size:0.75rem;color:var(--accent);margin-top:0.3rem;display:none;">⌛ Subiendo imagen...</p>
+      </div>
+      <div class="form-group" style="margin-top:0.75rem;">
+        <label for="btn-add-extra-img">Imágenes adicionales</label>
+        <div class="images-list" id="extra-images-list"></div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.25rem;flex-wrap:wrap;">
+          <button class="btn-add-img" id="btn-add-extra-img" style="flex:1;">+ Añadir URL</button>
+          <button type="button" id="btn-pick-extra-img" class="btn-sm btn-edit">🖼️ Galería</button>
+          <label for="upload-extra-img" class="btn-sm btn-edit" style="cursor:pointer;" title="Subir imagen desde dispositivo">
+            📱 Subir
+            <input type="file" id="upload-extra-img" accept="image/*" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <p class="form-section-title" style="display: none;">Compra / Pago</p>
+      <div class="form-group" style="display: none; background:var(--bg2); padding:0.8rem; border-radius:12px; border:1px solid rgba(91,184,245,0.2);">
+        <label class="checkbox-label" style="margin-bottom:0.8rem; font-weight:600; color:var(--text-dark);">
+          <input type="checkbox" id="prod-use-cat-url" checked> 
+          🔗 Usar link de MercadoPago de la Categoría
+        </label>
+        <label for="prod-mercadoPagoUrl" id="prod-mp-label">URL personalizada de MercadoPago</label>
+        <input type="url" id="prod-mercadoPagoUrl" placeholder="https://mpago.la/... o https://link.mercadopago.com.co/..." disabled style="opacity:0.6;">
+        <p id="prod-mp-helper" style="font-size:0.75rem; color:var(--text-medium); margin-top:0.3rem;">Desactiva la opción superior para ingresar un precio especial / link distinto por tema de márgenes.</p>
+      </div>
+
+      <p class="form-section-title">Reseñas y Social Proof</p>
+      <div class="form-group">
+        <label for="prod-reviewUrl">URL de Reseña (TikTok, Reels, Youtube)</label>
+        <input type="url" id="prod-reviewUrl" placeholder="https://www.tiktok.com/@peloot.accesorios/video/...">
+        <p style="font-size:0.75rem; color:var(--text-medium); margin-top:0.3rem;">Aparecerá un botón de "Ver Reseña" en la ficha del producto.</p>
+      </div>
+
+      <p class="form-section-title">Badges y estado</p>
+      <div class="form-group">
+      <p class="form-section-title" style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800;">Badges</p>
+        <div class="checkbox-group">
+          <label class="checkbox-label"><input type="checkbox" id="badge-new"> 🆕 NEW</label>
+          <label class="checkbox-label"><input type="checkbox" id="badge-popular"> 🔥 POPULAR</label>
+          <label class="checkbox-label"><input type="checkbox" id="badge-hot"> ⚡ HOT</label>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:0.75rem;">
+        <label for="prod-active">Estado del producto</label>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="prod-active" checked>
+            <span class="slider"></span>
+          </label>
+          <span id="active-label">Activo (visible en la tienda)</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-delete" id="btn-modal-delete" style="margin-right:auto;">🗑️ Eliminar</button>
+      <button class="btn-sm btn-edit" style="background:var(--bg3); color:var(--text2);" id="btn-modal-cancel">Cancelar</button>
+      <button class="btn-primary" id="btn-modal-save" style="width:auto; padding:0.65rem 1.5rem;">💾 Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: CATEGORÍA ==================== -->
+<div class="modal-overlay" id="cat-modal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h3 id="cat-modal-title">Nueva Categoría</h3>
+      <button class="modal-close" id="cat-modal-close">✖</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cat-id">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="cat-emoji">Emoji / Icono</label>
+          <input type="text" id="cat-emoji" placeholder="Ej: 🎮" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label for="cat-name">Nombre visible</label>
+          <input type="text" id="cat-name" placeholder="Ej: Blox Fruits">
+        </div>
+        <div class="form-group full">
+          <label for="cat-slug">Slug (ID único, sin espacios)</label>
+          <input type="text" id="cat-slug" placeholder="Ej: bloxfruits">
+        </div>
+        <div class="form-group full">
+          <label for="cat-desc">Descripción corta</label>
+          <input type="text" id="cat-desc" placeholder="Ej: Frutas y poderes legendarios">
+        </div>
+        <div class="form-group full" style="margin-top: 0.5rem; padding-top: 1rem; border-top: 1px dashed rgba(91, 184, 245, 0.2);">
+          <label for="cat-mp-url">🔗 Link global de MercadoPago (se aplica a todos los productos)</label>
+          <input type="url" id="cat-mp-url" placeholder="https://mpago.la/... o https://link.mercadopago.com.co/...">
+          <p style="font-size: 0.75rem; color: var(--text-medium); margin-top: 0.3rem;">Si cambias este enlace, todos los productos de esta categoría se actualizarán automáticamente.</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-delete" id="btn-cat-delete" style="margin-right:auto;display:none;">🗑️ Eliminar</button>
+      <button class="btn-sm btn-edit" style="background:var(--bg3);color:var(--text2);" id="btn-cat-cancel">Cancelar</button>
+      <button class="btn-primary" id="btn-cat-save" style="width:auto;padding:0.65rem 1.5rem;">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: ENVÍO ==================== -->
+<div class="modal-overlay" id="shipping-modal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h3 id="shipping-modal-title">Asignar Envío</h3>
+      <button class="modal-close" id="shipping-modal-close">✖</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ship-order-id">
+      <p style="font-size: 0.9rem; color: var(--text-medium); margin-bottom: 1rem;">Ingresa los datos de envío para que el cliente pueda rastrear su pedido.</p>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="ship-company">Transportadora (Ej: CargoX, Inter Rapidísimo)</label>
+          <input type="text" id="ship-company" placeholder="Empresa de envíos">
+        </div>
+        <div class="form-group full">
+          <label for="ship-tracking">Número de Guía (Tracking Number)</label>
+          <input type="text" id="ship-tracking" placeholder="Ej: 9988776655">
+        </div>
+        <div class="form-group full">
+          <label for="ship-url">Link de Rastreo Directo</label>
+          <input type="url" id="ship-url" placeholder="https://...">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-edit" style="background:var(--bg3);color:var(--text2);margin-right:auto;" id="btn-shipping-cancel">Cancelar</button>
+      <button class="btn-primary" id="btn-shipping-save" style="width:auto;padding:0.65rem 1.5rem;">🚚 Marcar como Enviado</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== IMAGE PICKER MODAL ==================== -->
+<div class="img-picker-overlay" id="img-picker-overlay">
+  <div class="img-picker-modal">
+    <div class="img-picker-header">
+      <h3>🖼️ Seleccionar imagen</h3>
+      <button class="modal-close" id="img-picker-close">✖</button>
+    </div>
+    <div class="img-picker-filters" id="img-picker-filters">
+      <button class="filter-btn active" data-pcat="">Todas</button>
+      <button class="filter-btn" data-pcat="logo">Logo</button>
+      <button class="filter-btn" data-pcat="bloxfruits">Blox Fruits</button>
+      <button class="filter-btn" data-pcat="clashroyale">Clash Royale</button>
+      <button class="filter-btn" data-pcat="pvz">PvZ</button>
+      <button class="filter-btn" data-pcat="fnaf">FNAF</button>
+      <button class="filter-btn" data-pcat="icons">Iconos</button>
+    </div>
+    <div class="img-picker-grid" id="img-picker-grid"></div>
+  </div>
+</div>
+
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script type="module">
+// ALL IMPORTS MUST BE FIRST in ES modules
+import { db, storage, auth } from './js/firebase-config.js';
+import {
+  getAllProducts, updateProduct, createProduct, deleteProduct,
+  subscribeToOrders, confirmOrder, deleteOrder, getOrders, updateOrderShipping,
+  getUserProfile
+} from './js/firebase-service.js?v=1.11';
+import { CURRENCIES, convertPrice, getGlobalSettings } from './js/store-service.js?v=1.11';
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } 
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-storage.js";
+import {
+  collection, doc, getDoc, getDocs, addDoc, updateDoc, setDoc, deleteDoc, serverTimestamp, query, where
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// =================== STORAGE UPLOAD ===================
+async function uploadImageFromFile(file, fieldId, progressId) {
+  const progressEl = document.getElementById(progressId);
+  if (progressEl) { progressEl.style.display = 'block'; progressEl.textContent = '⌛ Subiendo...'; }
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const uid = `${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    const storageRef = ref(storage, `products/images/${uid}.${ext}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    const field = document.getElementById(fieldId);
+    if (field) { field.value = url; field.dispatchEvent(new Event('input')); }
+    if (progressEl) { progressEl.textContent = '✅ ¡Imagen subida! ID: ' + uid; setTimeout(() => { progressEl.style.display='none'; }, 4000); }
+    return url;
+  } catch(err) {
+    if (progressEl) { progressEl.textContent = '❌ Error: ' + err.message; }
+    console.error('Upload error:', err);
+    return null;
+  }
+}
+
+
+// ====================== AUTH (Real Firebase Auth) ======================
+const SESSION_KEY = 'peloot_admin_auth';
+const isLoggedIn = () => sessionStorage.getItem(SESSION_KEY) === 'ok';
+
+async function checkAdmin(user) {
+  if (!user) { showLogin(); return; }
+  try {
+    const profile = await getUserProfile(user.uid);
+    // Bypass para el administrador principal
+    if (user.email === 'juanroblox89@gmail.com' || (profile && profile.role === 'admin')) {
+      sessionStorage.setItem(SESSION_KEY, 'ok');
+      showAdmin();
+    } else {
+      alert('⚠️ Acceso denegado. No tienes permisos de administrador.');
+      await signOut(auth);
+      showLogin();
+    }
+  } catch (e) {
+    console.error("Error verificando admin:", e);
+    showLogin();
+  }
+}
+
+function isLoggedInLegacy() { return sessionStorage.getItem(SESSION_KEY) === 'ok'; }
+async function logout() { 
+  sessionStorage.removeItem(SESSION_KEY); 
+  await signOut(auth);
+  location.reload(); 
+}
+
+function showLogin() {
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('admin-page').style.display = 'none';
+  document.getElementById('admin-page').classList.remove('visible');
+  const btn = document.getElementById('btn-login');
+  btn.textContent = 'Entrar con Google (Admin)';
+}
+
+function showAdmin() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('admin-page').style.display = 'block';
+  document.getElementById('admin-page').classList.add('visible');
+  initAdmin();
+}
+
+document.getElementById('btn-login').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithRedirect(auth, provider);
+  } catch (err) {
+    console.error(err);
+    alert('Error al iniciar sesión: ' + err.message);
+  }
+});
+
+document.getElementById('btn-logout').addEventListener('click', logout);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Siempre verificamos el perfil para mayor seguridad
+    checkAdmin(user);
+  } else {
+    showLogin();
+  }
+});
+
+// ====================== TABS ======================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    try {
+      const tabName = btn.dataset.tab;
+      const sectionId = tabName + '-section';
+      let targetSection = document.getElementById(sectionId);
+
+      if (!targetSection) {
+        console.warn(`Sección "${sectionId}" no encontrada. Creando placeholder.`);
+        const mainContent = document.querySelector('.admin-content');
+        targetSection = document.createElement('section');
+        targetSection.id = sectionId;
+        targetSection.className = 'tab-panel';
+        targetSection.innerHTML = `
+          <div style="text-align:center; padding:5rem; color:var(--text-muted);">
+            <div style="font-size:4rem; margin-bottom:1rem;">🚧</div>
+            <h3>Sección en Construcción</h3>
+            <p>Estamos trabajando en el módulo de <strong>${tabName}</strong>.</p>
+          </div>
+        `;
+        mainContent.appendChild(targetSection);
+      }
+
+      // Limpiar estados
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+      // Activar actual
+      btn.classList.add('active');
+      targetSection.classList.add('active');
+
+      // Hook para cargas específicas
+      if (tabName === 'users' && typeof loadUsers === 'function') loadUsers();
+    } catch (e) {
+      console.error("Error en navegación:", e);
+    }
+  });
+});
+
+// ====================== TOAST ======================
+function showToast(msg, type='success') {
+  const tc = document.getElementById('toast-container');
+  if (!tc) return;
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${type==='success'?'✅':'❌'}</span><span class="toast-msg">${msg}</span>`;
+  tc.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+window.showToast = showToast;
+
+// ====================== PRODUCTS ======================
+let allProducts = [];
+let globalSettings = { exchangeRates: { COP: 1 } }; // Fallback inicial
+let currentCatFilter = '';
+let editingProductId = null;
+let isCreating = false;
+
+async function loadProducts() {
+  const grid = document.getElementById('products-grid');
+  grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Cargando productos...</div>';
+  
+  try {
+    allProducts = await getAllProducts();
+    if (!globalSettings || !globalSettings.exchangeRates) {
+      await loadGlobalSettings();
+    }
+    updateProductStats();
+    renderProducts();
+  } catch(e) {
+    console.error("Error loading products:", e);
+    grid.innerHTML = '<div class="error-msg">Error al cargar productos</div>';
+  }
+}
+
+function updateProductStats() {
+  const elTotal = document.querySelector('.stat-total');
+  const elActive = document.querySelector('.stat-active');
+  const elCats = document.querySelector('.stat-cats');
+  
+  if (elTotal) elTotal.textContent = allProducts.length;
+  if (elActive) elActive.textContent = allProducts.filter(p => p.active !== false).length;
+  const cats = new Set(allProducts.map(p => p.category).filter(Boolean));
+  if (elCats) elCats.textContent = cats.size;
+}
+
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  const search = document.getElementById('prod-search').value.toLowerCase();
+  
+  // Lógica de Moneda
+  const currencyCode = localStorage.getItem('peloot_currency') || 'USD';
+  const activeCurrency = CURRENCIES.find(c => c.code === currencyCode) || CURRENCIES[0];
+
+  const filtered = allProducts.filter(p => {
+    const matchCat = !currentCatFilter || p.category === currentCatFilter;
+    const matchSearch = !search || p.name?.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><h3>Sin resultados</h3><p>No se encontraron productos con ese filtro</p></div>';
+    return;
+  }
+  grid.innerHTML = '';
+  filtered.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-admin-card';
+    const isActive = p.active !== false;
+    const img = p.imageUrl || p.image || 'assets/images/logo/favicon.png';
+    const price = (p.price || 0).toLocaleString('es-CO');
+    card.innerHTML = `
+      <div class="card-thumb">
+        <img src="${img}" alt="${p.name}" onerror="this.src='assets/images/logo/favicon.png'">
+        <span class="prod-status-badge ${isActive ? 'active' : 'inactive'}">${isActive ? '✅ Activo' : '❌ Inactivo'}</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="cat-tag">${p.category || 'sin categoría'}</div>
+          ${p.useCategoryMpUrl === false ? '<div class="cat-tag" style="background:rgba(255,193,7,0.1);color:#FFC107;border-color:rgba(255,193,7,0.2);" title="Tiene un link de pago distinto al de su categoría">➡️ Custom</div>' : ''}
+        </div>
+        <h4 title="${p.name}">${p.name || 'Sin nombre'}</h4>
+        <div class="price-tag">${activeCurrency.symbol}${convertPrice(p.price || 0, activeCurrency.code, globalSettings.exchangeRates).toLocaleString('es-CO')} ${activeCurrency.code}</div>
+        <div class="card-actions">
+          <button class="btn-sm btn-edit" data-id="${p.id}">✏️ Editar</button>
+          <button class="btn-sm btn-delete" data-id="${p.id}">🗑️ Eliminar</button>
+        </div>
+      </div>`;
+    card.querySelector('.btn-edit').addEventListener('click', () => openProductModal(p.id));
+    card.querySelector('.btn-delete').addEventListener('click', () => confirmDeleteProduct(p.id, p.name));
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById('prod-search').addEventListener('input', renderProducts);
+document.querySelectorAll('.filter-btn[data-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-cat]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCatFilter = btn.dataset.cat;
+    renderProducts();
+  });
+});
+
+// ---- Modal PRODUCTO ----
+function openProductModal(productId) {
+  const p = allProducts.find(x => x.id === productId);
+  if (!p) return;
+  isCreating = false;
+  editingProductId = productId;
+  document.getElementById('modal-title').textContent = 'Editar Producto';
+  document.getElementById('btn-modal-delete').style.display = 'inline-flex';
+  document.getElementById('prod-id').value = p.id;
+  document.getElementById('prod-name').value = p.name || '';
+  document.getElementById('prod-price').value = p.price || '';
+  document.getElementById('prod-category').value = p.category || 'bloxfruits';
+  document.getElementById('prod-description').value = p.description || '';
+  document.getElementById('prod-imageUrl').value = p.imageUrl || p.image || '';
+  document.getElementById('prod-mercadoPagoUrl').value = p.mercadoPagoUrl || '';
+  document.getElementById('prod-reviewUrl').value = p.reviewUrl || '';
+  document.getElementById('prod-use-cat-url').checked = p.useCategoryMpUrl !== false; // Default true
+  toggleMpUrlInput();
+  document.getElementById('prod-active').checked = p.active !== false;
+  document.getElementById('active-label').textContent = p.active !== false ? 'Activo (visible en la tienda)' : 'Inactivo (oculto)';
+  document.getElementById('badge-new').checked = !!(p.badges && p.badges.includes('NEW'));
+  document.getElementById('badge-popular').checked = !!(p.badges && p.badges.includes('POPULAR'));
+  document.getElementById('badge-hot').checked = !!(p.badges && p.badges.includes('HOT'));
+  // Extra images
+  const extraList = document.getElementById('extra-images-list');
+  extraList.innerHTML = '';
+  (p.images || []).forEach(url => addExtraImageRow(url));
+  document.getElementById('product-modal').classList.add('show');
+}
+
+function openCreateModal() {
+  isCreating = true;
+  editingProductId = null;
+  document.getElementById('modal-title').textContent = 'Nuevo Producto';
+  document.getElementById('btn-modal-delete').style.display = 'none';
+  document.getElementById('prod-id').value = '';
+  document.getElementById('prod-name').value = '';
+  document.getElementById('prod-price').value = '';
+  document.getElementById('prod-category').value = 'bloxfruits';
+  document.getElementById('prod-description').value = '';
+  document.getElementById('prod-imageUrl').value = '';
+  document.getElementById('prod-mercadoPagoUrl').value = '';
+  document.getElementById('prod-reviewUrl').value = '';
+  document.getElementById('prod-use-cat-url').checked = true;
+  toggleMpUrlInput();
+  document.getElementById('prod-active').checked = true;
+  document.getElementById('active-label').textContent = 'Activo (visible en la tienda)';
+  document.getElementById('badge-new').checked = false;
+  document.getElementById('badge-popular').checked = false;
+  document.getElementById('badge-hot').checked = false;
+  document.getElementById('extra-images-list').innerHTML = '';
+  document.getElementById('product-modal').classList.add('show');
+}
+
+function closeProductModal() {
+  document.getElementById('product-modal').classList.remove('show');
+}
+
+function addExtraImageRow(url='') {
+  const list = document.getElementById('extra-images-list');
+  const row = document.createElement('div');
+  row.className = 'img-row';
+  row.innerHTML = `<input type="url" value="${url}" placeholder="https://..."><button class="btn-remove-img" type="button">✖</button>`;
+  row.querySelector('.btn-remove-img').addEventListener('click', () => row.remove());
+  list.appendChild(row);
+}
+
+document.getElementById('btn-add-extra-img').addEventListener('click', () => addExtraImageRow());
+document.getElementById('btn-create-product').addEventListener('click', openCreateModal);
+document.getElementById('modal-close-product').addEventListener('click', closeProductModal);
+document.getElementById('btn-modal-cancel').addEventListener('click', closeProductModal);
+document.getElementById('product-modal').addEventListener('click', e => { if(e.target === e.currentTarget) closeProductModal(); });
+
+document.getElementById('prod-active').addEventListener('change', function() {
+  document.getElementById('active-label').textContent = this.checked ? 'Activo (visible en la tienda)' : 'Inactivo (oculto)';
+});
+
+// Category MP URL Toggle Logic
+const cbUseCatUrl = document.getElementById('prod-use-cat-url');
+const inpMpUrl = document.getElementById('prod-mercadoPagoUrl');
+
+function toggleMpUrlInput() {
+  if (cbUseCatUrl.checked) {
+    inpMpUrl.disabled = true;
+    inpMpUrl.style.opacity = '0.6';
+    // Optionally auto-fill the URL for preview
+    const catSlug = document.getElementById('prod-category').value;
+    const catObj = allCategories.find(c => (c.slug || c.id) === catSlug);
+    if (catObj && catObj.mercadoPagoUrl) {
+      inpMpUrl.value = catObj.mercadoPagoUrl;
+    } else {
+      inpMpUrl.value = '';
+      inpMpUrl.placeholder = 'Esta categoría aún no tiene link global...';
+    }
+  } else {
+    inpMpUrl.disabled = false;
+    inpMpUrl.style.opacity = '1';
+    inpMpUrl.placeholder = 'https://mpago.la/... o https://link.mercadopago.com.co/...';
+  }
+}
+
+cbUseCatUrl.addEventListener('change', toggleMpUrlInput);
+document.getElementById('prod-category').addEventListener('change', () => {
+  if (cbUseCatUrl.checked) toggleMpUrlInput();
+});
+
+document.getElementById('btn-modal-save').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-modal-save');
+  const name = document.getElementById('prod-name').value.trim();
+  const price = parseFloat(document.getElementById('prod-price').value);
+  if (!name) { showToast('El nombre es obligatorio', 'error'); return; }
+  if (!price || price <= 0) { showToast('El precio debe ser mayor a 0', 'error'); return; }
+
+  const badges = [];
+  if (document.getElementById('badge-new').checked) badges.push('NEW');
+  if (document.getElementById('badge-popular').checked) badges.push('POPULAR');
+  if (document.getElementById('badge-hot').checked) badges.push('HOT');
+
+  const extraImages = Array.from(document.querySelectorAll('#extra-images-list .img-row input'))
+    .map(i => i.value.trim()).filter(Boolean);
+
+  const useCategoryMpUrl = document.getElementById('prod-use-cat-url').checked;
+  const categorySlug = document.getElementById('prod-category').value;
+  let mpUrl = document.getElementById('prod-mercadoPagoUrl').value.trim();
+  
+  if (useCategoryMpUrl) {
+    const catObj = allCategories.find(c => (c.slug || c.id) === categorySlug);
+    mpUrl = catObj?.mercadoPagoUrl || '';
+  }
+
+  const data = {
+    name,
+    price,
+    category: categorySlug,
+    description: document.getElementById('prod-description').value.trim(),
+    imageUrl: document.getElementById('prod-imageUrl').value.trim(),
+    mercadoPagoUrl: mpUrl,
+    reviewUrl: document.getElementById('prod-reviewUrl').value.trim(),
+    useCategoryMpUrl,
+    active: document.getElementById('prod-active').checked,
+    badges,
+    images: extraImages
+  };
+
+  btn.textContent = '⌛ Guardando...';
+  btn.disabled = true;
+  try {
+    if (isCreating) {
+      await createProduct(data);
+      showToast('Producto creado correctamente ✅');
+    } else {
+      await updateProduct(editingProductId, data);
+      showToast('Producto actualizado correctamente ✅');
+    }
+    closeProductModal();
+    await loadProducts();
+  } catch(e) {
+    showToast('Error al guardar: ' + e.message, 'error');
+  } finally {
+    btn.textContent = '💾 Guardar cambios';
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('btn-modal-delete').addEventListener('click', () => {
+  if (editingProductId) confirmDeleteProduct(editingProductId, document.getElementById('prod-name').value);
+});
+
+async function confirmDeleteProduct(id, name) {
+  if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    await deleteProduct(id);
+    closeProductModal();
+    showToast('Producto eliminado');
+    await loadProducts();
+  } catch(e) {
+    showToast('Error al eliminar: ' + e.message, 'error');
+  }
+}
+
+// ====================== ORDERS ======================
+let ordersUnsubscribe = null;
+let currentOrderStatus = 'pending';
+
+function initOrders() {
+  loadOrdersWithFilter('pending');
+}
+
+function loadOrdersWithFilter(status) {
+  currentOrderStatus = status;
+  if (ordersUnsubscribe) ordersUnsubscribe();
+  const list = document.getElementById('orders-list');
+  list.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Cargando pedidos...</div>';
+
+  ordersUnsubscribe = subscribeToOrders(status || null, (orders) => {
+    renderOrders(orders);
+    updateOrderStats(orders);
+  });
+}
+
+function renderOrders(orders) {
+  const list = document.getElementById('orders-list');
+  const badge = document.getElementById('orders-badge');
+  const topBadge = document.getElementById('topbar-pending-badge');
+
+  if (!orders.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📫</div><h3>Sin pedidos</h3><p>No hay pedidos en esta categoría</p></div>';
+    if (currentOrderStatus === 'pending') { badge.textContent = '0'; topBadge.textContent = '0 pedidos pendientes'; }
+    return;
+  }
+
+  if (currentOrderStatus === 'pending') {
+    badge.textContent = orders.length;
+    topBadge.textContent = `${orders.length} pedido${orders.length !== 1 ? 's' : ''} pendiente${orders.length !== 1 ? 's' : ''}`;
+  }
+
+  list.innerHTML = '';
+  orders.forEach(order => {
+    const card = document.createElement('div');
+    card.className = `order-card${order.status === 'confirmed' ? ' confirmed' : ''}`;
+    const date = order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString('es-CO') : 'Fecha desconocida';
+    const price = (order.productPrice || 0).toLocaleString('es-CO');
+    
+    const currency = order.currency || 'COP';
+    const convertedPrice = order.totalConverted ? order.totalConverted.toLocaleString('es-CO') : price;
+    const countryStr = order.country || order.department || '—';
+    const paymentMethod = order.paymentMethod || 'No especificado';
+    
+    const cleanPhone = (order.phone || '').replace(/\D/g, '');
+    const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=Hola%20${encodeURIComponent(order.fullName||'')},%20te%20escribimos%20de%20PeLoot%20respecto%20a%20tu%20pedido%20%23${order.id.slice(0,8).toUpperCase()}` : '#';
+
+    const statusMap = { pending: '⌛ Pendiente', confirmed: '✅ Confirmado', shipped: '🚚 Enviado' };
+    
+    let shippingInfoHtml = '';
+    if (order.status === 'shipped') {
+      shippingInfoHtml = `
+        <div class="order-detail-item" style="grid-column:1/-1; background:var(--bg3); padding:0.5rem; border-radius:8px; border:1px solid rgba(91,184,245,0.2);">
+          <div class="detail-label">Datos de Envío</div>
+          <div class="detail-value">
+            <strong>${order.shippingCompany}</strong> - Guía: ${order.trackingNumber}
+            ${order.trackingUrl ? `<br><a href="${order.trackingUrl}" target="_blank" style="color:var(--primary-blue); text-decoration:none; display:inline-block; margin-top:0.25rem;">🔗 Link de Rastreo</a>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div>
+        <div class="order-header">
+          <span class="order-id" style="user-select:all; cursor:copy;" title="Copiar ID" onclick="navigator.clipboard.writeText('${order.id}')">#${order.id.slice(0,8).toUpperCase()}</span>
+          <span class="order-status-badge ${order.status}">${statusMap[order.status] || order.status}</span>
+          <span class="order-date">${date}</span>
+        </div>
+        <div class="order-product-name">
+          ${(order.items && order.items.length) ? order.items.map(i => `${i.name} × ${i.qty}`).join('<br>') : (order.productName ? `${order.productName} × ${order.qty || 1}` : 'Peluche PeLoot × 1')}
+        </div>
+        <div class="order-price">$${convertedPrice} ${currency} <span style="font-size:0.8rem;color:var(--text-medium);font-weight:600;">(${paymentMethod})</span></div>
+        <div class="order-details-grid">
+          <div class="order-detail-item"><div class="detail-label">Cliente</div><div class="detail-value">${order.fullName || '—'}</div></div>
+          <div class="order-detail-item"><div class="detail-label">Cédula</div><div class="detail-value">${order.cedula || '—'}</div></div>
+          <div class="order-detail-item"><div class="detail-label">Email</div><div class="detail-value">${order.email || '—'}</div></div>
+          <div class="order-detail-item"><div class="detail-label">Teléfono</div><div class="detail-value">${order.phone || '—'}</div></div>
+          <div class="order-detail-item"><div class="detail-label">País / Región</div><div class="detail-value">${countryStr}</div></div>
+          <div class="order-detail-item"><div class="detail-label">Ciudad</div><div class="detail-value">${order.city || '—'}</div></div>
+          <div class="order-detail-item" style="grid-column:1/-1"><div class="detail-label">Dirección</div><div class="detail-value">${order.address || '—'}${order.neighborhood ? ', ' + order.neighborhood : ''}</div></div>
+          ${order.notes ? `<div class="order-detail-item" style="grid-column:1/-1"><div class="detail-label">Instrucciones</div><div class="detail-value">${order.notes}</div></div>` : ''}
+          ${shippingInfoHtml}
+        </div>
+      </div>
+      <div class="order-actions">
+        ${cleanPhone ? `<a href="${waLink}" target="_blank" class="btn-sm btn-edit" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:0.3rem;">📱 WhatsApp</a>` : ''}
+        ${order.status === 'pending' ? `<button class="btn-sm btn-confirm" data-id="${order.id}">✅ Confirmar</button>` : ''}
+        ${order.status === 'confirmed' ? `<button class="btn-sm btn-primary btn-ship" data-id="${order.id}">🚚 Enviar</button>` : ''}
+        <button class="btn-sm btn-delete" data-id="${order.id}">🗑️ Archivar</button>
+      </div>`;
+    card.querySelector('.btn-delete')?.addEventListener('click', () => archiveOrder(order.id));
+    card.querySelector('.btn-confirm')?.addEventListener('click', () => doConfirmOrder(order.id));
+    card.querySelector('.btn-ship')?.addEventListener('click', () => openShippingModal(order.id));
+    list.appendChild(card);
+  });
+}
+
+function updateOrderStats(orders) {
+  if (!orders) return;
+  const pendingCount = orders.filter(o => o.status === 'pending').length;
+  const confirmedCount = orders.filter(o => o.status === 'confirmed').length;
+  const shippedCount = orders.filter(o => o.status === 'shipped').length;
+  document.getElementById('stat-pending').textContent = pendingCount;
+}
+
+async function doConfirmOrder(id) {
+  try {
+    await confirmOrder(id);
+    showToast('Pedido confirmado ✅');
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+// Shipping modal logic
+function openShippingModal(orderId) {
+  document.getElementById('ship-order-id').value = orderId;
+  document.getElementById('ship-company').value = '';
+  document.getElementById('ship-tracking').value = '';
+  document.getElementById('ship-url').value = '';
+  document.getElementById('shipping-modal').classList.add('show');
+}
+
+function closeShippingModal() {
+  document.getElementById('shipping-modal').classList.remove('show');
+}
+
+document.getElementById('shipping-modal-close').addEventListener('click', closeShippingModal);
+document.getElementById('btn-shipping-cancel').addEventListener('click', closeShippingModal);
+
+document.getElementById('btn-shipping-save').addEventListener('click', async () => {
+  const orderId = document.getElementById('ship-order-id').value;
+  const company = document.getElementById('ship-company').value.trim();
+  const tracking = document.getElementById('ship-tracking').value.trim();
+  const rawUrl = document.getElementById('ship-url').value.trim();
+  const btn = document.getElementById('btn-shipping-save');
+
+  if (!company || !tracking) {
+    showToast('Por favor ingresa la transportadora y el número de guía.', 'error');
+    return;
+  }
+
+  let sanitizedUrl = rawUrl;
+  if (sanitizedUrl) {
+    // Corregir errores comunes como punto y coma en lugar de dos puntos (ej: https;/...)
+    sanitizedUrl = sanitizedUrl.replace(/^https?;/i, 'https:');
+    // Asegurar que comience con http:// o https://
+    if (!/^https?:\/\//i.test(sanitizedUrl)) {
+      sanitizedUrl = 'https://' + sanitizedUrl;
+    }
+  }
+
+  btn.textContent = '⌛ Guardando...';
+  btn.disabled = true;
+
+  try {
+    await updateOrderShipping(orderId, {
+      shippingCompany: company,
+      trackingNumber: tracking,
+      trackingUrl: sanitizedUrl
+    });
+    showToast('Datos de envío guardados correctamente ✅');
+    closeShippingModal();
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  } finally {
+    btn.textContent = '🚚 Marcar como Enviado';
+    btn.disabled = false;
+  }
+});
+
+async function archiveOrder(id) {
+  if (!confirm('¿Archivar/eliminar este pedido? Ya no aparecerá en la lista.')) return;
+  try {
+    await deleteOrder(id);
+    showToast('Pedido archivado');
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+// Order filters
+document.querySelectorAll('.filter-btn[data-status]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadOrdersWithFilter(btn.dataset.status);
+  });
+});
+
+// ====================== INIT ======================
+async function initAdmin() {
+  await loadProducts();
+  initOrders();
+  loadCategories();
+  renderGallery();
+  loadGlobalSettings();
+}
+
+// ============================================================
+// CATEGORIES + GALLERY + IMAGE PICKER JS (Merged)
+// ============================================================
+
+// ============================================================
+// ALL LOCAL IMAGES MANIFEST
+// ============================================================
+const ALL_IMAGES = [
+  // ─── BANNER
+  { path:'assets/images/banner-placeholder.png', name:'banner-placeholder.png', cat:'logo', section:'Banner del sitio', usage:'Banner principal de /' },
+  // ─── LOGO & BRANDING
+  { path:'assets/images/logo/peloot.png',   name:'peloot.png',   cat:'logo', section:'Logo & Branding', usage:'Logo principal (header y footer)' },
+  { path:'assets/images/logo/favicon.png',  name:'favicon.png',  cat:'logo', section:'Logo & Branding', usage:'Favicon del sitio' },
+  { path:'assets/images/logo/branding.png', name:'branding.png', cat:'logo', section:'Logo & Branding', usage:'Imagen de branding' },
+  // ─── ICONOS DE CATEGORÃA
+  { path:'assets/images/icons/bloxfruits.png',  name:'bloxfruits.png',  cat:'icons', section:'Iconos de Categoría', usage:'Tarjeta categoría Blox Fruits' },
+  { path:'assets/images/icons/clashroyale.png', name:'clashroyale.png', cat:'icons', section:'Iconos de Categoría', usage:'Tarjeta categoría Clash Royale' },
+  { path:'assets/images/icons/pvz.png',         name:'pvz.png',         cat:'icons', section:'Iconos de Categoría', usage:'Tarjeta categoría PvZ' },
+  // ─── ICONOS UI
+  { path:'assets/images/icons/best-seller.png',  name:'best-seller.png',  cat:'icons', section:'Iconos UI', usage:'Badge best-seller' },
+  { path:'assets/images/icons/cart.png',         name:'cart.png',         cat:'icons', section:'Iconos UI', usage:'Ãcono carrito' },
+  { path:'assets/images/icons/cartblack.png',    name:'cartblack.png',    cat:'icons', section:'Iconos UI', usage:'Ãcono carrito (oscuro)', orphan:true },
+  { path:'assets/images/icons/free-shipping.png',name:'free-shipping.png',cat:'icons', section:'Iconos UI', usage:'Badge envío gratis' },
+  { path:'assets/images/icons/guarantee.png',    name:'guarantee.png',    cat:'icons', section:'Iconos UI', usage:'Badge garantía' },
+  { path:'assets/images/icons/new.png',          name:'new.png',          cat:'icons', section:'Iconos UI', usage:'Badge NEW' },
+  { path:'assets/images/icons/offer.png',        name:'offer.png',        cat:'icons', section:'Iconos UI', usage:'Badge oferta' },
+  { path:'assets/images/icons/secure-pay.png',   name:'secure-pay.png',   cat:'icons', section:'Iconos UI', usage:'Badge pago seguro' },
+  { path:'assets/images/icons/star.png',         name:'star.png',         cat:'icons', section:'Iconos UI', usage:'Estrella de reseñas' },
+  { path:'assets/images/icons/whatsapp.png',     name:'whatsapp.png',     cat:'icons', section:'Iconos UI', usage:'Botón WhatsApp' },
+  { path:'assets/images/icons/arrow-left.png',   name:'arrow-left.png',   cat:'icons', section:'Iconos UI', usage:'Botón volver', orphan:true },
+  { path:'assets/images/icons/menu.png',         name:'menu.png',         cat:'icons', section:'Iconos UI', usage:'Hamburger menú', orphan:true },
+  { path:'assets/images/icons/search.png',       name:'search.png',       cat:'icons', section:'Iconos UI', usage:'Ãcono búsqueda', orphan:true },
+  { path:'assets/images/icons/close.png',        name:'close.png',        cat:'icons', section:'Iconos UI', usage:'Ãcono cerrar', orphan:true },
+  // ─── PRODUCTOS: BLOX FRUITS
+  { path:'assets/images/bloxfruits/buddha.png',     name:'buddha.png',     cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/control.png',    name:'control.png',    cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/eastdragon.png', name:'eastdragon.png', cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/fuego.png',      name:'fuego.png',      cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/kitsune.png',    name:'kitsune.png',    cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/mammoth.png',    name:'mammoth.png',    cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/portal.png',     name:'portal.png',     cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/sonido.png',     name:'sonido.png',     cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/trex.png',       name:'trex.png',       cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/trueno.png',     name:'trueno.png',     cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/westdragon.png', name:'westdragon.png', cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  { path:'assets/images/bloxfruits/yeti.png',       name:'yeti.png',       cat:'bloxfruits', section:'Productos ─ Blox Fruits', usage:'Producto Blox Fruits' },
+  // Orphans Blox Fruits (archivos pequeños sin uso conocido)
+  { path:'assets/images/bloxfruits/gas.png',           name:'gas.png',           cat:'bloxfruits', section:'Sin uso ─ Lost Media', usage:'Sin uso detectado', orphan:true },
+  { path:'assets/images/bloxfruits/masa.png',          name:'masa.png',          cat:'bloxfruits', section:'Sin uso ─ Lost Media', usage:'Sin uso detectado', orphan:true },
+  { path:'assets/images/bloxfruits/luz.png',           name:'luz.png',           cat:'bloxfruits', section:'Sin uso ─ Lost Media', usage:'Sin uso detectado', orphan:true },
+  { path:'assets/images/bloxfruits/easterndragon.png', name:'easterndragon.png', cat:'bloxfruits', section:'Sin uso ─ Lost Media', usage:'Sin uso detectado', orphan:true },
+  { path:'assets/images/bloxfruits/westerndragon.png', name:'westerndragon.png', cat:'bloxfruits', section:'Sin uso ─ Lost Media', usage:'Sin uso detectado', orphan:true },
+  // ─── PRODUCTOS: CLASH ROYALE
+  { path:'assets/images/clashroyale/baby-dragon.png', name:'baby-dragon.png', cat:'clashroyale', section:'Productos ─ Clash Royale', usage:'Producto Clash Royale' },
+  { path:'assets/images/clashroyale/minion.png',      name:'minion.png',      cat:'clashroyale', section:'Productos ─ Clash Royale', usage:'Producto Clash Royale' },
+  { path:'assets/images/clashroyale/tronco.png',      name:'tronco.png',      cat:'clashroyale', section:'Productos ─ Clash Royale', usage:'Producto Clash Royale' },
+  // ─── PRODUCTOS: PVZ
+  { path:'assets/images/pvz/cherry-bomb.png',  name:'cherry-bomb.png',  cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/fume-shroom.png',  name:'fume-shroom.png',  cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/hypno-shroom.png', name:'hypno-shroom.png', cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/melon-pult.png',   name:'melon-pult.png',   cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/pool-zombie.png',  name:'pool-zombie.png',  cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/potatomine.png',   name:'potatomine.png',   cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/repeater.png',     name:'repeater.png',     cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/snowpea.png',      name:'snowpea.png',      cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/squash.png',       name:'squash.png',       cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/sunflower.png',    name:'sunflower.png',    cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/winter-melon.png', name:'winter-melon.png', cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/pvz/yeti-zombie.png',  name:'yeti-zombie.png',  cat:'pvz', section:'Productos ─ Plants vs Zombies', usage:'Producto PvZ' },
+  { path:'assets/images/fnaf/vanny.png',           name:'vanny.png',           cat:'fnaf', section:'Productos ─ FNAF', usage:'Producto FNAF' },
+];
+
+// ============================================================
+// TOAST helper (re-use from parent scope via window)
+// ============================================================
+
+// ============================================================
+// GALLERY TAB
+// ============================================================
+let galleryLimit = 20;
+
+function renderGallery(loadMore = false) {
+  const container = document.getElementById('gallery-grid');
+  if (!container) return;
+
+  if (!loadMore) galleryLimit = 20;
+
+  const filtered = ALL_IMAGES.filter(img => {
+    const matchCat = !galCatFilter || img.cat === galCatFilter;
+    const matchSearch = !galSearch || img.name.toLowerCase().includes(galSearch.toLowerCase()) || (img.usage||'').toLowerCase().includes(galSearch.toLowerCase());
+    return matchCat && matchSearch;
+  });
+
+  const totalFiltered = filtered.length;
+  const visible = filtered.slice(0, galleryLimit);
+
+  // Group by section
+  const sections = {};
+  visible.forEach(img => {
+    const sec = img.section || 'Otros';
+    if (!sections[sec]) sections[sec] = [];
+    sections[sec].push(img);
+  });
+
+  container.innerHTML = '';
+  const sectionOrder = Object.keys(sections).filter(s => s !== 'Sin uso — Lost Media');
+  if (sections['Sin uso — Lost Media']) sectionOrder.push('Sin uso — Lost Media');
+
+  sectionOrder.forEach(secName => {
+    const imgs = sections[secName];
+    const isOrphanSection = secName === 'Sin uso — Lost Media';
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-section';
+    wrap.innerHTML = `<div class="gallery-section-header">
+      <h3>${isOrphanSection ? '📂' : '📁'} ${secName}</h3>
+      ${isOrphanSection ? '<span class="orphan-badge">⚠️ Sin uso conocido</span>' : ''}
+    </div><div class="gallery-grid"></div>`;
+    const grid = wrap.querySelector('.gallery-grid');
+
+    imgs.forEach(img => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      const usageTip = img.usage ? `<div class="gal-cat" title="${img.usage}">${img.usage}</div>` : '';
+      item.innerHTML = `
+        <div class="gal-thumb"><img src="${img.path}" alt="${img.name}" loading="lazy" onerror="this.style.opacity=0.25"></div>
+        <div class="gal-info">
+          <div class="gal-name" title="${img.name}">${img.name}</div>
+          ${usageTip}
+        </div>
+        <div class="gal-actions">
+          <button class="btn-copy-url" style="width:100%;">🔗 Copiar URL</button>
+        </div>`;
+      item.querySelector('.btn-copy-url').addEventListener('click', () => copyUrl(img.path));
+      grid.appendChild(item);
+    });
+    container.appendChild(wrap);
+  });
+
+  if (galleryLimit < totalFiltered) {
+    const btnRow = document.createElement('div');
+    btnRow.style.textAlign = 'center';
+    btnRow.style.margin = '2rem 0';
+    btnRow.innerHTML = `<button class="btn btn-primary">Cargar más imágenes (${totalFiltered - galleryLimit} restantes)</button>`;
+    btnRow.onclick = () => {
+      galleryLimit += 20;
+      renderGallery(true);
+    };
+    container.appendChild(btnRow);
+  }
+
+  if (!filtered.length) container.innerHTML = '<div class="empty-state"><div class="empty-icon">📂</div><h3>Sin resultados</h3></div>';
+}
+
+function downloadImage(img) {
+  const a = document.createElement('a');
+  a.href = img.path;
+  a.download = img.name;
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast(`Descargando ${img.name} ✅`);
+}
+
+function copyUrl(path) {
+  const fullUrl = window.location.origin + '/' + path;
+  navigator.clipboard.writeText(path).then(() => toast('URL copiada al portapapeles 📋')).catch(() => {
+    prompt('Copia esta URL:', path);
+  });
+}
+
+document.getElementById('gal-search')?.addEventListener('input', (e) => { galSearch = e.target.value; renderGallery(); });
+document.querySelectorAll('.filter-btn[data-gcat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-gcat]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    galCatFilter = btn.dataset.gcat;
+    renderGallery();
+  });
+});
+
+// Expose for main script
+window.renderGallery = renderGallery;
+
+// ============================================================
+// IMAGE PICKER
+// ============================================================
+const pickerOverlay = document.getElementById('img-picker-overlay');
+const pickerGrid   = document.getElementById('img-picker-grid');
+let pickerCallback = null;
+let pickerCatFilter = '';
+
+function renderPickerGrid() {
+  const filtered = ALL_IMAGES.filter(img => !pickerCatFilter || img.cat === pickerCatFilter);
+  pickerGrid.innerHTML = '';
+  filtered.forEach(img => {
+    const item = document.createElement('div');
+    item.className = 'picker-item';
+    item.innerHTML = `<div class="pi-thumb"><img src="${img.path}" alt="${img.name}" loading="lazy"></div><div class="pi-name">${img.name}</div>`;
+    item.addEventListener('click', () => {
+      if (pickerCallback) pickerCallback(img.path);
+      closePicker();
+    });
+    pickerGrid.appendChild(item);
+  });
+}
+
+function openPicker(callback) {
+  pickerCallback = callback;
+  pickerCatFilter = '';
+  document.querySelectorAll('.filter-btn[data-pcat]').forEach(b => b.classList.toggle('active', b.dataset.pcat === ''));
+  renderPickerGrid();
+  pickerOverlay.classList.add('show');
+}
+
+function closePicker() {
+  pickerOverlay.classList.remove('show');
+  pickerCallback = null;
+}
+
+document.getElementById('img-picker-close')?.addEventListener('click', closePicker);
+pickerOverlay.addEventListener('click', e => { if(e.target === pickerOverlay) closePicker(); });
+document.querySelectorAll('.filter-btn[data-pcat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-pcat]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    pickerCatFilter = btn.dataset.pcat;
+    renderPickerGrid();
+  });
+});
+
+// Hook buttons in product modal
+document.getElementById('btn-pick-main-img')?.addEventListener('click', () => {
+  openPicker((path) => {
+    const inp = document.getElementById('prod-imageUrl');
+    inp.value = path;
+    const preview = document.getElementById('prod-img-preview');
+    const previewEl = document.getElementById('prod-img-preview-el');
+    previewEl.src = path;
+    preview.style.display = 'block';
+  });
+});
+
+document.getElementById('btn-pick-extra-img')?.addEventListener('click', () => {
+  openPicker((path) => {
+    const list = document.getElementById('extra-images-list');
+    const row = document.createElement('div');
+    row.className = 'img-row';
+    row.innerHTML = `<input type="url" value="${path}" placeholder="https://..."><button class="btn-remove-img" type="button">✖</button>`;
+    row.querySelector('.btn-remove-img').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+  });
+});
+
+// Device file upload — main image
+document.getElementById('upload-main-img')?.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = await uploadImageFromFile(file, 'prod-imageUrl', 'upload-main-progress');
+  if (url) {
+    document.getElementById('prod-img-preview-el').src = url;
+    document.getElementById('prod-img-preview').style.display = 'block';
+  }
+  e.target.value = '';
+});
+
+// Device file image (uses shared helper) (uses shared helper)
+document.getElementById('upload-extra-img')?.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const progressEl = document.getElementById('upload-main-progress');
+  if (progressEl) { progressEl.style.display='block'; progressEl.textContent='⌛ Subiendo imagen adicional...'; }
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const uid = `${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    const storageRef = ref(storage, `products/images/${uid}.${ext}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    const list = document.getElementById('extra-images-list');
+    const row = document.createElement('div');
+    row.className = 'img-row';
+    row.innerHTML = `<input type="url" value="${url}" placeholder="https://..."><button class="btn-remove-img" type="button">✖</button>`;
+    row.querySelector('.btn-remove-img').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+    if (progressEl) { progressEl.textContent=`✅ Subida. ID: ${uid}`; setTimeout(() => { progressEl.style.display='none'; }, 4000); }
+  } catch(err) {
+    if (progressEl) { progressEl.textContent='❌ Error: ' + err.message; }
+    console.error('Extra upload error:', err);
+  }
+  e.target.value = '';
+});
+
+// Remove main image button
+document.getElementById('btn-remove-main-img')?.addEventListener('click', () => {
+  document.getElementById('prod-imageUrl').value = '';
+  document.getElementById('prod-img-preview-el').src = '';
+  document.getElementById('prod-img-preview').style.display = 'none';
+});
+
+// Live preview for main image URL input
+document.getElementById('prod-imageUrl')?.addEventListener('input', (e) => {
+  const val = e.target.value.trim();
+  const preview = document.getElementById('prod-img-preview');
+  const previewEl = document.getElementById('prod-img-preview-el');
+  if (val) { previewEl.src = val; preview.style.display = 'block'; }
+  else { preview.style.display = 'none'; }
+});
+
+// ============================================================
+// CATEGORIES CRUD
+// ============================================================
+const CAT_COL = collection(db, 'categories');
+let allCategories = [];
+let editingCatId = null;
+
+async function loadCategories() {
+  const list = document.getElementById('cat-list');
+  list.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Cargando...</div>';
+  try {
+    const snap = await getDocs(CAT_COL);
+    const dbCats = snap.docs.map(d => ({ id: d.id, ...d.data(), _fromFirestore: true }));
+    
+    // Merge database categories with default categories (so defaults don't disappear)
+    allCategories = [...dbCats];
+    DEFAULT_CATS.forEach(defCat => {
+      if (!allCategories.find(c => (c.slug || c.id) === (defCat.slug || defCat.id))) {
+        allCategories.push({ ...defCat });
+      }
+    });
+    renderCategories();
+    refreshCategorySelect();
+  } catch(e) {
+    allCategories = DEFAULT_CATS.map(c => ({...c}));
+    renderCategories();
+    refreshCategorySelect();
+  }
+}
+
+function renderCategories() {
+  const list = document.getElementById('cat-list');
+  if (!allCategories.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🏷️</div><h3>Sin categorías</h3><p>Crea tu primera categoría</p></div>';
+    return;
+  }
+  list.innerHTML = '';
+  allCategories.forEach(cat => {
+    const isDefault = DEFAULT_CATS.some(d => d.slug === (cat.slug || cat.id)) && !cat._fromFirestore;
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.innerHTML = `
+      <div class="cat-emoji">${cat.emoji || '📦'}</div>
+      <div class="cat-info">
+        <div class="cat-name">${cat.name || '—'}</div>
+        <div class="cat-slug">slug: ${cat.slug || cat.id}</div>
+        ${cat.description ? `<div class="cat-count">${cat.description}</div>` : ''}
+        ${cat.mercadoPagoUrl ? `<div style="font-size:0.75rem; color:#009ee3; margin-top:0.3rem; font-weight:600;">🔗 Link Global Activo</div>` : `<div style="font-size:0.75rem; color:var(--text-medium); margin-top:0.3rem;">Sin link global</div>`}
+      </div>
+      <div class="cat-actions">
+        <button class="btn-sm btn-edit">✏️ Editar</button>
+        ${cat.id && !DEFAULT_CATS.some(d=>d.id===cat.id) ? `<button class="btn-sm btn-delete">🗑️</button>` : ''}
+      </div>`;
+    card.querySelector('.btn-edit').addEventListener('click', () => openCatModal(cat));
+    card.querySelector('.btn-delete')?.addEventListener('click', () => deleteCat(cat.id, cat.name));
+    list.appendChild(card);
+  });
+}
+
+const DEFAULT_CATS = [
+  { id:'bloxfruits',  slug:'bloxfruits',  name:'Blox Fruits',       emoji:'🍉', description:'Frutas y poderes legendarios' },
+  { id:'clashroyale', slug:'clashroyale', name:'Clash Royale',       emoji:'⚔️', description:'Tropas icónicas del juego' },
+  { id:'pvz',         slug:'pvz',         name:'Plants vs Zombies',  emoji:'🌻', description:'Defensas clásicas para tu escritorio' },
+  { id:'fnaf',        slug:'fnaf',        name:'FNAF',               emoji:'🐻', description:'Animatrónicos adorablemente terroríficos' },
+];
+
+function refreshCategorySelect() {
+  const sel = document.getElementById('prod-category');
+  if (!sel) return;
+  const currentVal = sel.value;
+  const cats = allCategories.length ? allCategories : DEFAULT_CATS;
+  sel.innerHTML = cats.map(c => `<option value="${c.slug || c.id}">${c.emoji || ''} ${c.name}</option>`).join('');
+  if (currentVal) sel.value = currentVal;
+}
+
+function openCatModal(cat = null) {
+  const isNew = !cat;
+  editingCatId = cat ? cat.id : null;
+  document.getElementById('cat-modal-title').textContent = isNew ? 'Nueva Categoría' : 'Editar Categoría';
+  document.getElementById('btn-cat-delete').style.display = isNew ? 'none' : 'inline-flex';
+  document.getElementById('cat-id').value = cat?.id || '';
+  document.getElementById('cat-emoji').value = cat?.emoji || '';
+  document.getElementById('cat-name').value = cat?.name || '';
+  document.getElementById('cat-slug').value = cat?.slug || cat?.id || '';
+  document.getElementById('cat-desc').value = cat?.description || '';
+  document.getElementById('cat-mp-url').value = cat?.mercadoPagoUrl || '';
+  document.getElementById('cat-modal').classList.add('show');
+}
+
+function closeCatModal() { document.getElementById('cat-modal').classList.remove('show'); }
+
+document.getElementById('btn-create-cat')?.addEventListener('click', () => openCatModal());
+document.getElementById('cat-modal-close')?.addEventListener('click', closeCatModal);
+document.getElementById('btn-cat-cancel')?.addEventListener('click', closeCatModal);
+document.getElementById('cat-modal')?.addEventListener('click', e => { if(e.target.id === 'cat-modal') closeCatModal(); });
+
+// Auto-generate slug from name
+document.getElementById('cat-name')?.addEventListener('input', (e) => {
+  const slugEl = document.getElementById('cat-slug');
+  if (!editingCatId) {
+    slugEl.value = e.target.value.toLowerCase().replace(/\s+/g,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+});
+
+document.getElementById('btn-cat-save')?.addEventListener('click', async () => {
+  const name = document.getElementById('cat-name').value.trim();
+  const slug = document.getElementById('cat-slug').value.trim();
+  if (!name || !slug) { toast('Nombre y slug son obligatorios', 'error'); return; }
+  const btn = document.getElementById('btn-cat-save');
+  btn.textContent = '⌛'; btn.disabled = true;
+  const mercadoPagoUrl = document.getElementById('cat-mp-url').value.trim();
+  const data = {
+    name, slug,
+    emoji: document.getElementById('cat-emoji').value.trim(),
+    description: document.getElementById('cat-desc').value.trim(),
+    mercadoPagoUrl,
+    updatedAt: serverTimestamp()
+  };
+  try {
+    if (editingCatId) {
+      const oldCat = allCategories.find(c => c.id === editingCatId);
+      await setDoc(doc(db, 'categories', editingCatId), data, { merge: true });
+      
+      // Auto-propagate MP URL to products
+      if (oldCat && oldCat.mercadoPagoUrl !== mercadoPagoUrl) {
+        toast('Actualizando productos... ⌛');
+        const q = query(collection(db, 'products'), where('category', '==', slug));
+        const snap = await getDocs(q);
+        const updatePromises = [];
+        snap.forEach(productDoc => {
+          const pData = productDoc.data();
+          if (pData.useCategoryMpUrl !== false) { // True or undefined means use category link
+            updatePromises.push(updateDoc(productDoc.ref, { mercadoPagoUrl, useCategoryMpUrl: true }));
+          }
+        });
+        if (updatePromises.length) {
+          await Promise.all(updatePromises);
+          toast(`Se actualizaron ${updatePromises.length} productos 🔗 ✅`);
+          if (window.loadProducts) window.loadProducts(); // Refresh product table if defined
+        }
+      }
+      
+      toast('Categoría actualizada ✅');
+    } else {
+      await addDoc(CAT_COL, { ...data, createdAt: serverTimestamp() });
+      toast('Categoría creada ✅');
+    }
+    closeCatModal();
+    await loadCategories();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { btn.textContent = '💾 Guardar'; btn.disabled = false; }
+});
+
+document.getElementById('btn-cat-delete')?.addEventListener('click', () => {
+  if (editingCatId) deleteCat(editingCatId, document.getElementById('cat-name').value);
+});
+
+async function deleteCat(id, name) {
+  if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    await deleteDoc(doc(db, 'categories', id));
+    toast('Categoría eliminada');
+    closeCatModal();
+    await loadCategories();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ====================== GLOBAL SETTINGS ======================
+async function loadGlobalSettings() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'global'));
+    if (!snap.exists()) return;
+    const s = snap.data();
+    globalSettings = s;
+    
+    document.getElementById('set-coupon-code').value = s.activeCoupon || '';
+    document.getElementById('set-coupon-discount').value = s.discountPercent || '';
+    document.getElementById('set-link-first').value = s.firstBuyerLink || '';
+    document.getElementById('set-link-regular').value = s.regularBuyerLink || '';
+    document.getElementById('set-logo-url').value = s.logoUrl || '';
+    document.getElementById('set-banner-url').value = s.bannerUrl || '';
+    
+    if (s.exchangeRates) {
+      document.getElementById('rate-COP').value = s.exchangeRates.COP || '';
+      document.getElementById('rate-ARS').value = s.exchangeRates.ARS || '';
+      document.getElementById('rate-MXN').value = s.exchangeRates.MXN || '';
+      document.getElementById('rate-CLP').value = s.exchangeRates.CLP || '';
+      document.getElementById('rate-PEN').value = s.exchangeRates.PEN || '';
+      document.getElementById('rate-UYU').value = s.exchangeRates.UYU || '';
+    }
+  } catch (e) {
+    console.error("Error cargando ajustes:", e);
+  }
+}
+
+document.getElementById('btn-save-settings')?.addEventListener('click', async () => {
+  const btn = document.getElementById('btn-save-settings');
+  btn.textContent = '⌛ Guardando...';
+  btn.disabled = true;
+  
+  const data = {
+    activeCoupon: document.getElementById('set-coupon-code').value.trim(),
+    discountPercent: parseFloat(document.getElementById('set-coupon-discount').value) || 0,
+    firstBuyerLink: document.getElementById('set-link-first').value.trim(),
+    regularBuyerLink: document.getElementById('set-link-regular').value.trim(),
+    logoUrl: document.getElementById('set-logo-url').value.trim(),
+    bannerUrl: document.getElementById('set-banner-url').value.trim(),
+    exchangeRates: {
+      COP: parseFloat(document.getElementById('rate-COP').value) || 4000,
+      ARS: parseFloat(document.getElementById('rate-ARS').value) || 900,
+      MXN: parseFloat(document.getElementById('rate-MXN').value) || 17,
+      CLP: parseFloat(document.getElementById('rate-CLP').value) || 950,
+      PEN: parseFloat(document.getElementById('rate-PEN').value) || 3.7,
+      UYU: parseFloat(document.getElementById('rate-UYU').value) || 39,
+      USD: 1
+    },
+    updatedAt: serverTimestamp()
+  };
+  
+  try {
+    await setDoc(doc(db, 'settings', 'global'), data, { merge: true });
+    showToast('Ajustes globales guardados ✅');
+  } catch (e) {
+    showToast('Error al guardar: ' + e.message, 'error');
+  } finally {
+    btn.textContent = '💾 Guardar Todo';
+    btn.disabled = false;
+  }
+});
+
+// ===== USUARIOS =====
+async function loadUsers() {
+  const tbody = document.getElementById('users-table-body');
+  if (!tbody) return;
+  
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    tbody.innerHTML = '';
+    
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay usuarios registrados</td></tr>';
+      return;
+    }
+    
+    snap.forEach(docSnap => {
+      const u = docSnap.data();
+      const tr = document.createElement('tr');
+      const dateStr = u.lastLogin ? new Date(u.lastLogin.toDate()).toLocaleString() : 'N/A';
+      
+      tr.innerHTML = `
+        <td><img src="${u.photoURL || 'assets/images/logo/favicon.png'}" style="width:32px;height:32px;border-radius:50%;"></td>
+        <td><strong>${u.displayName || 'N/A'}</strong></td>
+        <td>${u.email}</td>
+        <td>${u.currency || 'USD'}</td>
+        <td>${u.orderCount || 0}</td>
+        <td><span class="badge ${u.role === 'admin' ? 'badge-primary' : 'badge-soft'}">${u.role || 'customer'}</span></td>
+        <td style="font-size:0.8rem;">${dateStr}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (e) {
+    console.error(e);
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:red;">Error al cargar usuarios</td></tr>';
+  }
+}
+
+// Update showTab or existing tab logic
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    if (tab === 'users') loadUsers();
+    // (Other tabs are handled by the existing listener, we just hook in)
+  });
+});
+</script>
+
+</body>
+</html>

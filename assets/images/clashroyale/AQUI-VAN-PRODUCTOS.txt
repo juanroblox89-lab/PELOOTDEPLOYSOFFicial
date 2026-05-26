@@ -1,0 +1,6 @@
+Coloca aquí las imágenes de productos Clash Royale (3 productos):
+- tronco.png
+- baby-dragon.png
+- minion.png
+
+Tamaño recomendado: 800x800px, fondo blanco o transparente.

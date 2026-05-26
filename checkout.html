@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Checkout | PeLoot — Premium Gaming</title>
+  
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='css/epic-loot.css' />
+</head>
+
+<body>
+
+  <header class="header-premium">
+    <div class="container header-container">
+      <button class="hamburger-gaming" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <a href="index" class="logo-gaming">
+        <img src="assets/images/logo/peloot.png" alt="PeLoot" style="height: 44px;">
+      </a>
+
+      <nav id="main-nav" class="nav-gaming">
+        <a href="index">Inicio</a>
+        <a href="products">Productos</a>
+        <a href="orders">Mis Pedidos</a>
+      </nav>
+
+      <div class="header-actions-gaming">
+        <div class="user-action" id="btn-open-auth" title="Mi Cuenta">
+          <img src="assets/images/logo/favicon.png" alt="User" id="header-user-img">
+        </div>
+        <a href="cart" class="cart-action">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-inner-main">
+    
+    <div class="page-intro">
+      <h1 class="page-inner-title">Checkout Seguro 🔒</h1>
+      <p style="color: var(--text-muted); font-weight: 600;">Ingresa tus datos de envío para preparar tu loot.</p>
+    </div>
+
+    <div class="cart-checkout-layout">
+      
+      <div class="checkout-form-section">
+        
+        <h3 style="margin-bottom: 24px; font-size: 1.3rem;">1. Datos de Contacto</h3>
+        <div class="checkout-grid-2">
+          <label for="chk-name" class="sr-only">Nombre completo</label>
+          <input type="text" id="chk-name" placeholder="Nombre completo *" class="checkout-input" required>
+          
+          <label for="chk-email" class="sr-only">Correo electrónico</label>
+          <input type="email" id="chk-email" placeholder="Correo electrónico *" class="checkout-input" required>
+          
+          <label for="chk-phone" class="sr-only">WhatsApp (para el envío)</label>
+          <input type="tel" id="chk-phone" placeholder="WhatsApp (para el envío) *" class="checkout-input" required>
+          
+          <label for="chk-id" class="sr-only">Cédula / ID</label>
+          <input type="text" id="chk-id" placeholder="Cédula / ID (para transportadora) *" class="checkout-input" required>
+        </div>
+
+        <h3 style="margin-bottom: 24px; font-size: 1.3rem;">2. Dirección de Envío</h3>
+        <div class="checkout-grid-2">
+          <label for="chk-address" class="sr-only">Dirección completa</label>
+          <input type="text" id="chk-address" placeholder="Dirección completa (Calle, #, Apto) *" class="checkout-input" style="grid-column: 1/-1;" required>
+          
+          <label for="chk-neighborhood" class="sr-only">Barrio</label>
+          <input type="text" id="chk-neighborhood" placeholder="Barrio *" class="checkout-input" required>
+          
+          <label for="chk-city" class="sr-only">Ciudad</label>
+          <input type="text" id="chk-city" placeholder="Ciudad *" class="checkout-input" required>
+          
+          <label for="chk-state" class="sr-only">Departamento</label>
+          <input type="text" id="chk-state" placeholder="Departamento *" class="checkout-input" required>
+          
+          <label for="chk-zip" class="sr-only">Código Postal</label>
+          <input type="text" id="chk-zip" placeholder="Código Postal" class="checkout-input">
+          
+          <label for="chk-country" class="sr-only">País</label>
+          <select id="chk-country" class="checkout-input" required>
+            <option value="Colombia" selected>Colombia</option>
+            <option value="México">México</option>
+            <option value="España">España</option>
+            <option value="Chile">Chile</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Perú">Perú</option>
+            <option value="Otro">Otro País</option>
+          </select>
+          
+          <label for="chk-notes" class="sr-only">Notas adicionales</label>
+          <textarea id="chk-notes" placeholder="Notas adicionales (ej: Casa blanca, dejar en portería...)" class="checkout-input" style="grid-column: 1/-1; height: 80px; padding: 12px;"></textarea>
+        </div>
+
+        <div id="auth-warning" style="display:none; background: var(--bg-gradient-1); border: 1px solid var(--primary-blue-light); padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px; text-align: center;">
+          <p style="color: var(--primary-blue); font-weight: 800; margin-bottom: 12px; font-size: 1rem;">Necesitas iniciar sesión para comprar</p>
+          <button id="btn-force-login" class="btn-secondary-gaming" style="width: 100%; justify-content: center; font-weight: 800;">Iniciar Sesión con Google</button>
+          <div style="margin-top: 14px; background: #FFF5F5; border: 1px solid #FEB2B2; padding: 12px; border-radius: 8px; text-align: left; font-size: 0.8rem; color: #C53030; line-height: 1.4; font-weight: 700;">
+            ⚠️ <strong>¿Estás dentro de TikTok o Instagram?</strong><br>
+            Google bloquea el inicio de sesión dentro de estas apps. Para poder iniciar sesión y comprar, toca los 3 puntos (•••) en la esquina superior derecha y selecciona <strong>"Abrir en el navegador"</strong> (Chrome/Safari).
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cart-summary-sidebar">
+        <div class="summary-card">
+          <h3 style="margin-bottom: 24px; border-bottom: 1px solid var(--bg-main); padding-bottom: 16px;">Resumen del Pedido</h3>
+          
+          <div id="checkout-items-list" style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto;">
+            <!-- Items injected by JS -->
+          </div>
+
+          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 600; color: var(--text-muted);">
+            <span>Subtotal</span>
+            <span id="chk-subtotal">$ 0 COP</span>
+          </div>
+          
+          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 600; color: var(--text-muted);">
+            <span>Envío Internacional</span>
+            <span style="color: #10B981;">Gratis</span>
+          </div>
+
+          <div class="summary-row total-row" style="display: flex; justify-content: space-between; margin-bottom: 32px; font-size: 1.5rem; font-weight: 900; color: var(--primary-blue);">
+            <span>Total</span>
+            <span id="chk-total">$ 0 COP</span>
+          </div>
+
+          <button id="btn-confirm-order" class="btn-primary-gaming" style="width: 100%; justify-content: center; padding: 18px; font-size: 1.1rem; background: var(--accent-green); color: white; box-shadow: 0 4px 14px rgba(97, 196, 84, 0.4); display: flex; align-items: center; gap: 8px;">
+            Confirmar Pedido <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          
+          <div style="margin-top: 24px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Tus datos están seguros
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer-gaming">
+    <div class="container">
+      <div class="footer-grid-new">
+        <div class="footer-col-gaming">
+          <img src="assets/images/logo/peloot.png" alt="PeLoot" class="footer-logo-new">
+          <p style="max-width: 300px;">La marca #1 de coleccionables gaming en el mundo real. Calidad premium para los fans más apasionados.</p>
+        </div>
+        <div class="footer-col-gaming">
+          <h4>Soporte</h4>
+          <a href="cart">Carrito</a>
+          <a href="tracking">Rastrear Loot</a>
+          <a href="legal/shipping">Envíos y Entregas</a>
+          <a href="legal/privacy">Privacidad</a>
+        </div>
+      </div>
+      <div class="footer-bottom-gaming">
+        <p>&copy; 2026 PeLoot. Todos los derechos reservados.</p>
+        <div class="payment-badges-gaming">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/checkout.js?v=2.1"></script>
+  <script type="module">
+    import { initHeaderAndAuth } from './js/ui-init.js';
+    initHeaderAndAuth();
+  </script>
+</body>
+</html>

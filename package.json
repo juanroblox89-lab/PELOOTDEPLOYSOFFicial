@@ -1,0 +1,12 @@
+{
+  "name": "peloot-store",
+  "private": true,
+  "description": "PeLoot storefront — static HTML/CSS/JS + Firebase",
+  "scripts": {
+    "deploy:rules": "npx --yes firebase-tools@13 deploy --only firestore:rules --non-interactive"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "mercadopago": "^3.0.0"
+  }
+}

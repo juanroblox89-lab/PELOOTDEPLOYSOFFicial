@@ -1,0 +1,12 @@
+Coloca aquí los iconos de interfaz:
+- cart.png
+- arrow-left.png
+- search.png
+- whatsapp.png
+- free-shipping.png
+- star.png
+- bloxfruits.png
+- clashroyale.png
+- pvz.png
+
+Todos en formato PNG con fondo transparente.

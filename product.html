@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Producto | PeLoot — Premium Gaming Brand</title>
+  <meta name="description"
+    content="Peluches coleccionables de alta fidelidad. Calidad premium, envío a todo el mundo.">
+
+  <link rel="icon" type="image/png" href="assets/images/logo/favicon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel='stylesheet' href='css/epic-loot.css' />
+</head>
+
+<body class="product-page">
+
+  <header class="header-premium">
+    <div class="container header-container">
+      <button class="hamburger-gaming" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <a href="index" class="logo-gaming">
+        <img src="assets/images/logo/peloot.png" alt="PeLoot" style="height: 44px;">
+      </a>
+
+      <nav id="main-nav" class="nav-gaming">
+        <a href="index">Inicio</a>
+        <a href="products">Productos</a>
+        <a href="orders">Mis Pedidos</a>
+      </nav>
+
+      <div class="header-actions-gaming">
+        <div class="user-action" id="btn-open-auth">
+          <img src="assets/images/logo/favicon.png" alt="User" id="header-user-img">
+        </div>
+        <a href="cart" class="cart-action">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-product-detail-main">
+    
+    <div class="product-back-row">
+      <a href="products" class="product-back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Regresar al catálogo
+      </a>
+    </div>
+
+    <div class="product-grid" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: start;">
+      
+      <!-- Gallery -->
+      <div class="product-gallery-premium">
+        <div style="background: white; border-radius: var(--radius-lg); padding: 60px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); border: 1px solid var(--bg-section); margin-bottom: 24px;">
+          <img id="product-img" src="assets/images/logo/peloot.png" alt="Product Image" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1));">
+        </div>
+        <div id="product-gallery-thumbs" style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px;">
+          <!-- Thumbs dynamically added -->
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="product-info-premium">
+        <span id="product-category" style="background: var(--primary-blue-light); color: var(--primary-blue); padding: 6px 14px; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">Colección Premium</span>
+        <h1 id="product-name" style="font-size: 3.5rem; margin: 16px 0 24px; color: var(--text-main);">Cargando...</h1>
+        
+        <div style="margin-bottom: 32px;">
+          <span id="product-price" style="font-size: 2.5rem; font-weight: 900; color: var(--text-main);">$0</span>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 40px;">
+          <div style="background: var(--bg-section); padding: 8px 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; color: var(--text-body);">⭐ 4.9/5 Calificación</div>
+          <div style="background: var(--bg-section); padding: 8px 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; color: var(--text-body);">🚚 Envío Gratis</div>
+        </div>
+
+        <p id="product-desc" style="font-size: 1.15rem; color: var(--text-body); line-height: 1.8; margin-bottom: 48px;">
+          Explorando los detalles de este increíble coleccionable...
+        </p>
+
+        <!-- Actions -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 12px;">
+            <span style="font-weight: 800; color: var(--text-main);">CANTIDAD:</span>
+            <div style="display: flex; align-items: center; background: white; border: 2px solid var(--bg-section); border-radius: var(--radius-md); padding: 4px;">
+              <button id="qty-minus" style="width: 40px; height: 40px; border: none; background: transparent; font-weight: 900; cursor: pointer;">-</button>
+              <span id="qty-val" style="width: 40px; text-align: center; font-weight: 900; font-size: 1.1rem;">1</span>
+              <button id="qty-plus" style="width: 40px; height: 40px; border: none; background: transparent; font-weight: 900; cursor: pointer;">+</button>
+            </div>
+          </div>
+
+          <button id="addCart" class="btn-primary-gaming" style="width: 100%; height: 72px; font-size: 1.25rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            AGREGAR AL CARRITO
+          </button>
+          
+          <button id="btn-direct-buy" class="btn-blue-gaming" style="width: 100%; height: 64px; font-size: 1.1rem;">
+            Comprar ahora ⚡
+          </button>
+        </div>
+
+        <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--bg-section); display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">🛡️</div>
+            <h5 style="margin-bottom: 4px;">Calidad Real</h5>
+            <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Materiales premium hipoalergénicos.</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">🚀</div>
+            <h5 style="margin-bottom: 4px;">Envío Rápido</h5>
+            <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Tracking en tiempo real garantizado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div style="margin-top: 80px; background: white; border-radius: var(--radius-xl); padding: 48px; border: 1px solid var(--border-light); box-shadow: var(--shadow-md);">
+      <h2 style="font-size: 2rem; margin-bottom: 24px; color: var(--text-main); font-family: 'Poppins', sans-serif; font-weight: 800; text-align: center;">⭐ Opiniones de los Gamers</h2>
+      
+      <!-- Resumen de Reseñas / Cabecera Estilo Google -->
+      <div id="reviews-header" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; border-bottom: 1px solid var(--bg-section); padding-bottom: 32px; margin-bottom: 32px;">
+        <!-- Puntuación General -->
+        <div style="text-align: center; border-right: 1.5px solid var(--bg-section); padding-right: 32px;">
+          <div id="avg-rating-val" style="font-size: 4rem; font-weight: 900; color: var(--text-main); line-height: 1;">4.9</div>
+          <div id="avg-stars-container" style="color: var(--secondary-yellow); font-size: 1.8rem; margin: 8px 0;">★★★★★</div>
+          <p id="total-reviews-count" style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; margin: 0;">Basado en 0 opiniones</p>
+        </div>
+        
+        <!-- Botón para escribir reseña -->
+        <div style="text-align: center;">
+          <h4 style="font-size: 1.1rem; margin-bottom: 12px; color: var(--text-main);">¿Tienes este peluche?</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px; font-weight: 500;">Comparte tu experiencia con otros gamers en el mundo real.</p>
+          <button id="btn-open-review-form" class="btn-primary-gaming" style="padding: 12px 24px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; margin: 0 auto;">
+            ✍️ Escribir Reseña
+          </button>
+        </div>
+      </div>
+
+      <!-- Formulario para Nueva Reseña (Inicialmente Oculto) -->
+      <div id="review-form-container" style="display: none; background: var(--bg-section); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 32px; border: 1.5px dashed var(--primary-blue);">
+        <h3 style="font-size: 1.3rem; margin-bottom: 20px; color: var(--text-main); font-weight: 800;">Escribe tu Opinión Premium</h3>
+        
+        <form id="new-review-form" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Selección de Estrellas -->
+          <div>
+            <label style="font-weight: 800; font-size: 0.9rem; display: block; margin-bottom: 8px; color: var(--text-main);">VALORACIÓN:</label>
+            <div id="rating-stars-picker" style="display: flex; gap: 8px; font-size: 2rem; color: #ccc; cursor: pointer; user-select: none;">
+              <span data-value="1" class="star-picker-item" style="transition: color 0.15s;">★</span>
+              <span data-value="2" class="star-picker-item" style="transition: color 0.15s;">★</span>
+              <span data-value="3" class="star-picker-item" style="transition: color 0.15s;">★</span>
+              <span data-value="4" class="star-picker-item" style="transition: color 0.15s;">★</span>
+              <span data-value="5" class="star-picker-item" style="transition: color 0.15s;">★</span>
+            </div>
+            <input type="hidden" id="review-rating-val" value="5">
+          </div>
+
+          <!-- Nombre del Gamer -->
+          <div>
+            <label for="review-username" style="font-weight: 800; font-size: 0.9rem; display: block; margin-bottom: 8px; color: var(--text-main);">TU NOMBRE / GAMERTAG:</label>
+            <input type="text" id="review-username" required placeholder="Ej. Juan Gamer, MiniPekkaFan" style="width: 100%; height: 50px; border-radius: var(--radius-md); border: 2px solid var(--border-light); padding: 0 16px; font-size: 0.95rem; font-family: inherit; font-weight: 500; background: white; color: var(--text-main);">
+          </div>
+
+          <!-- Reseña/Comentario -->
+          <div>
+            <label for="review-comment" style="font-weight: 800; font-size: 0.9rem; display: block; margin-bottom: 8px; color: var(--text-main);">TU OPINIÓN:</label>
+            <textarea id="review-comment" required rows="4" placeholder="¿Qué tal la calidad? ¿Qué personaje compraste? ¡Nos encanta saber tu opinión!" style="width: 100%; border-radius: var(--radius-md); border: 2px solid var(--border-light); padding: 16px; font-size: 0.95rem; font-family: inherit; font-weight: 500; resize: vertical; background: white; color: var(--text-main);"></textarea>
+          </div>
+
+          <!-- Foto del Peluche (Opcional) -->
+          <div>
+            <label style="font-weight: 800; font-size: 0.9rem; display: block; margin-bottom: 8px; color: var(--text-main);">SUBIR FOTO DEL PELUCHE (OPCIONAL 📸):</label>
+            <div style="position: relative; display: inline-block; width: 100%;">
+              <input type="file" id="review-image-file" accept="image/*" style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer; z-index: 10;">
+              <div id="review-image-file-label" style="background: white; border: 2px dashed #ccc; border-radius: var(--radius-md); padding: 16px; text-align: center; font-weight: 700; font-size: 0.9rem; color: var(--text-muted); transition: border-color 0.2s;">
+                📂 Seleccionar foto o arrastrar aquí
+              </div>
+            </div>
+            <div id="review-image-preview-wrap" style="display: none; margin-top: 12px; position: relative; width: 80px; height: 80px; border-radius: 12px; overflow: hidden; border: 2px solid var(--primary-blue);">
+              <img id="review-image-preview" src="#" style="width: 100%; height: 100%; object-fit: cover;">
+              <button type="button" id="btn-remove-review-image" style="position: absolute; right: 2px; top: 2px; background: rgba(255, 77, 77, 0.9); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; font-weight: 900;">✕</button>
+            </div>
+          </div>
+
+          <!-- Botones Formulario -->
+          <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 10px;">
+            <button type="button" id="btn-cancel-review" class="btn-secondary-gaming" style="padding: 12px 24px; font-size: 0.9rem;">Cancelar</button>
+            <button type="submit" id="btn-submit-review" class="btn-primary-gaming" style="padding: 12px 24px; font-size: 0.9rem;">Publicar Reseña 🚀</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Lista de Reseñas Estilo Google -->
+      <div id="reviews-list-container" style="display: flex; flex-direction: column; gap: 24px;">
+        <!-- Cargadas dinámicamente -->
+        <div style="text-align: center; color: var(--text-muted); font-weight: 600; padding: 40px 0;">
+          Sincronizando opiniones con el servidor... 🛰️
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox de Imagen de Reseña (Premium Overlay) -->
+    <div id="review-lightbox" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 17, 23, 0.95); backdrop-filter: blur(10px); z-index: 100000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+      <button id="btn-close-lightbox" style="position: absolute; right: 24px; top: 24px; background: transparent; border: none; color: white; font-size: 2.5rem; cursor: pointer; transition: transform 0.2s;">✕</button>
+      <img id="lightbox-img" src="" style="max-width: 90%; max-height: 80%; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); object-fit: contain; filter: drop-shadow(0 0 20px rgba(46, 168, 255, 0.3));">
+    </div>
+
+    <!-- Related -->
+    <div style="margin-top: 120px;">
+      <h2 style="font-size: 2.2rem; margin-bottom: 40px;">También te puede interesar</h2>
+      <div id="related" class="product-grid-gaming">
+        <!-- Dynamic -->
+      </div>
+    </div>
+  </main>
+
+  <!-- STICKY CTA MOBILE -->
+  <div class="sticky-cta-container" id="mobile-sticky-bar">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 600px; margin: 0 auto;">
+      <div style="display: flex; flex-direction: column;">
+        <span id="sticky-price" style="font-size: 1.4rem; font-weight: 900; color: var(--text-main);">$0</span>
+        <span id="sticky-name" style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Cargando...</span>
+      </div>
+      <button id="sticky-buy-btn" class="btn-primary-gaming" style="padding: 12px 24px; font-size: 0.9rem; flex: 1; max-width: 200px;">
+        AGREGAR
+      </button>
+    </div>
+  </div>
+
+  <footer class="footer-gaming">
+    <div class="container">
+      <div class="footer-grid-new">
+        <div class="footer-col-gaming">
+          <img src="assets/images/logo/peloot.png" alt="PeLoot" class="footer-logo-new">
+          <p style="max-width: 300px;">La marca #1 de coleccionables gaming en el mundo real. Calidad premium para los fans más apasionados.</p>
+        </div>
+        <div class="footer-col-gaming">
+          <h4>Soporte</h4>
+          <a href="tracking">Rastrear Loot</a>
+          <a href="legal/shipping">Envíos y Entregas</a>
+          <a href="legal/refunds">Garantía</a>
+          <a href="legal/privacy">Privacidad</a>
+        </div>
+      </div>
+      <div class="footer-bottom-gaming">
+        <p>&copy; 2026 PeLoot. Todos los derechos reservados.</p>
+        <div class="payment-badges-gaming">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating -->
+  <a href="https://wa.me/3136374267" target="_blank" 
+     style="position: fixed; bottom: 32px; right: 32px; width: 64px; height: 64px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4); z-index: 9999;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-2.531c1.566.93 3.49 1.443 5.524 1.444 5.673 0 10.289-4.617 10.291-10.291.001-2.752-1.069-5.339-3.013-7.283-1.944-1.943-4.534-3.012-7.283-3.013-5.674 0-10.289 4.617-10.292 10.292-.001 2.016.514 3.93 1.489 5.488l-.991 3.618 3.731-.979zm11.387-7.464c-.301-.15-1.781-.879-2.057-.981-.275-.102-.476-.151-.675.151-.199.301-.771.982-.945 1.183-.174.201-.347.226-.648.076-.301-.15-1.269-.47-2.42-1.493-.894-.797-1.496-1.782-1.671-2.081-.175-.3-.018-.462.131-.611.134-.134.301-.351.451-.526.15-.176.201-.296.301-.496.101-.201.05-.376-.025-.526-.075-.15-.675-1.625-.924-2.228-.243-.584-.488-.504-.675-.513-.174-.009-.374-.01-.574-.01s-.525.075-.799.376c-.274.301-1.049 1.026-1.049 2.502 0 1.477 1.074 2.903 1.224 3.104.15.201 2.115 3.23 5.123 4.531.714.311 1.271.497 1.708.636.714.227 1.365.195 1.88.117.573-.086 1.781-.726 2.031-1.426.25-.7.25-1.301.175-1.426-.075-.125-.276-.201-.577-.352z"/></svg>
+  </a>
+
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/product.js"></script>
+  <script type="module">
+    import { initHeaderAndAuth } from './js/ui-init.js';
+    initHeaderAndAuth();
+  </script>
+  
+  <style>
+    @media (max-width: 992px) {
+      .product-grid { grid-template-columns: 1fr; gap: 40px; }
+      .product-info-premium { text-align: center; }
+      .product-info-premium div { justify-content: center !important; }
+      #product-name { font-size: 2.5rem; }
+      #product-price { font-size: 2.5rem; }
+      .sticky-cta-container { display: block; }
+    }
+    @media (max-width: 768px) {
+      #reviews-header {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        text-align: center;
+      }
+      #reviews-header > div:first-child {
+        border-right: none !important;
+        border-bottom: 2px solid var(--bg-section) !important;
+        padding-right: 0 !important;
+        padding-bottom: 24px !important;
+      }
+      #reviews-list-container {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</body>
+
+</html>

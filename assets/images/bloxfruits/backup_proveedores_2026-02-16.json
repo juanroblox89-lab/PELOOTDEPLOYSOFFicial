@@ -1,0 +1,295 @@
+{
+  "proveedores": [
+    {
+      "nombre": "Clash royale Plushies",
+      "telefono": "",
+      "direccion": "",
+      "url": "",
+      "tiempoEnvio": "25-40 dias",
+      "id": 1,
+      "productos": [
+        {
+          "nombre": "Babydragon",
+          "urlProducto": "https://www.mercadolibre.com.co/p/MCO2055999610?pdp_filters=item_id%3AMCO1820393747#polycard_client=cart_list&wid=MCO1820393747&sid=cart",
+          "costo": 30864,
+          "envio": 26214,
+          "costoTotal": 57078,
+          "precioVenta": 119000,
+          "ganancia": 61922,
+          "margen": 52.035294117647055,
+          "id": 1
+        },
+        {
+          "nombre": "Tronco",
+          "urlProducto": "https://www.mercadolibre.com.co/p/MCO2059894452?pdp_filters=item_id%3AMCO3515708430#polycard_client=cart_list&wid=MCO3515708430&sid=cart",
+          "costo": 32182,
+          "envio": 15889,
+          "costoTotal": 48071,
+          "precioVenta": 119000,
+          "ganancia": 70929,
+          "margen": 59.60420168067226,
+          "id": 2
+        },
+        {
+          "nombre": "Esbirro",
+          "urlProducto": "",
+          "costo": 35000,
+          "envio": 20000,
+          "costoTotal": 55000,
+          "precioVenta": 119000,
+          "ganancia": 64000,
+          "margen": 53.78151260504202,
+          "id": 3
+        }
+      ],
+      "compras": []
+    },
+    {
+      "nombre": "Blox fruits Plushies",
+      "telefono": "",
+      "direccion": "",
+      "url": "https://es.aliexpress.com/item/1005006289075447.html?spm=a2g0o.detail.pcDetailTopMoreOtherSeller.2.6ac85nb35nb3MW&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.354490.0&scm_id=1007.40050.354490.0&scm-url=1007.40050.354490.0&pvid=97689b14-81a1-41f5-a08e-a17061e06930&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.354490.0,pvid:97689b14-81a1-41f5-a08e-a17061e06930,tpp_buckets:668%232846%238109%231935&pdp_ext_f=%7B%22order%22%3A%22206%22%2C%22spu_best_type%22%3A%22order%22%2C%22eval%22%3A%221%22%2C%22sceneId%22%3A%2230050%22%2C%22fromPage%22%3A%22recommend%22%7D&pdp_npi=6%40dis%21COP%2119432.70%2111208.00%21%21%2136.35%2120.97%21%402101e2b617696521181623835e1de2%2112000036626477528%21rec%21CO%217008178751%21ABXZ%211%210%21n_tag%3A-29910%3Bd%3A16cb6796%3Bm03_new_user%3A-29895%3BpisId%3A5000000197850012&utparam-url=scene%3ApcDetailTopMoreOtherSeller%7Cquery_from%3A%7Cx_object_id%3A1005006289075447%7C_p_origin_prod%3A",
+      "tiempoEnvio": "",
+      "id": 2,
+      "productos": [
+        {
+          "nombre": "PeLoot Blox fruits plushies",
+          "urlProducto": "https://es.aliexpress.com/item/1005006289075447.html?spm=a2g0o.detail.pcDetailTopMoreOtherSeller.2.6ac85nb35nb3MW&gps-id=pcDetailTopMoreOtherSeller&scm=1007.40050.354490.0&scm_id=1007.40050.354490.0&scm-url=1007.40050.354490.0&pvid=97689b14-81a1-41f5-a08e-a17061e06930&_t=gps-id:pcDetailTopMoreOtherSeller,scm-url:1007.40050.354490.0,pvid:97689b14-81a1-41f5-a08e-a17061e06930,tpp_buckets:668%232846%238109%231935&pdp_ext_f=%7B%22order%22%3A%22206%22%2C%22spu_best_type%22%3A%22order%22%2C%22eval%22%3A%221%22%2C%22sceneId%22%3A%2230050%22%2C%22fromPage%22%3A%22recommend%22%7D&pdp_npi=6%40dis%21COP%2119432.70%2111208.00%21%21%2136.35%2120.97%21%402101e2b617696521181623835e1de2%2112000036626477528%21rec%21CO%217008178751%21ABXZ%211%210%21n_tag%3A-29910%3Bd%3A16cb6796%3Bm03_new_user%3A-29895%3BpisId%3A5000000197850012&utparam-url=scene%3ApcDetailTopMoreOtherSeller%7Cquery_from%3A%7Cx_object_id%3A1005006289075447%7C_p_origin_prod%3A",
+          "costo": 19687,
+          "envio": 7400,
+          "costoTotal": 27087,
+          "precioVenta": 95000,
+          "ganancia": 67913,
+          "margen": 71.48736842105264,
+          "id": 1
+        }
+      ],
+      "compras": []
+    },
+    {
+      "nombre": "Plants vs zombies Plushies",
+      "telefono": "",
+      "direccion": "",
+      "url": "",
+      "tiempoEnvio": "25-40 dias",
+      "id": 3,
+      "productos": [
+        {
+          "nombre": "Peloot Pvz Plushies",
+          "urlProducto": "https://es.aliexpress.com/item/1005006688412112.html?spm=a2g0o.productlist.main.10.e49333bafUv7HW&algo_pvid=e9ba0a6a-9a0b-481d-854d-fd03188a20a6&algo_exp_id=e9ba0a6a-9a0b-481d-854d-fd03188a20a6-9&pdp_ext_f=%7B%22order%22%3A%2267%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21COP%2123050.31%2115550.00%21%21%2142.69%2128.80%21%402101ee6617697102226778299e7ea0%2112000038018806057%21sea%21CO%217008178751%21ABX%211%210%21n_tag%3A-29910%3Bd%3A16cb6796%3Bm03_new_user%3A-29895%3BpisId%3A5000000197850012&curPageLogUid=X0ifdEQWpNkM&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005006688412112%7C_p_origin_prod%3A",
+          "costo": 23121,
+          "envio": 7400,
+          "costoTotal": 30521,
+          "precioVenta": 109000,
+          "ganancia": 78479,
+          "margen": 71.99908256880734,
+          "id": 1
+        }
+      ],
+      "compras": []
+    }
+  ],
+  "movimientos": [
+    {
+      "descripcion": "Gasto semanal escuela",
+      "monto": 1000,
+      "tipo": "ingreso",
+      "categoria": "Otros",
+      "id": 2,
+      "fecha": "2026-02-13T17:18:22.508Z"
+    },
+    {
+      "descripcion": "Venta bicicleta",
+      "monto": 100000,
+      "tipo": "ingreso",
+      "categoria": "Ventas",
+      "id": 3,
+      "fecha": "2026-02-15T19:48:14.110Z"
+    }
+  ],
+  "categorias": [
+    "Ventas",
+    "Compras",
+    "Gastos Operativos",
+    "Otros"
+  ],
+  "tareas": [
+    {
+      "materia": "Pedagogia",
+      "descripcion": "Libro",
+      "fechaEntrega": "2026-03-13",
+      "id": 1,
+      "fechaCreacion": "2026-02-13T17:50:25.799Z"
+    },
+    {
+      "materia": "Tecnologia",
+      "descripcion": "Desatrasar",
+      "fechaEntrega": "2026-02-20",
+      "id": 3,
+      "fechaCreacion": "2026-02-15T23:48:32.000Z"
+    },
+    {
+      "materia": "Biologia",
+      "descripcion": "Copiar carteleras",
+      "fechaEntrega": "2026-02-17",
+      "id": 4,
+      "fechaCreacion": "2026-02-15T23:49:20.706Z"
+    },
+    {
+      "materia": "Fisica",
+      "descripcion": "Calcular la frecuencia de yonoseq",
+      "fechaEntrega": "2026-02-19",
+      "id": 5,
+      "fechaCreacion": "2026-02-15T23:49:57.627Z"
+    }
+  ],
+  "horario": {
+    "dias": [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes"
+    ],
+    "horas": [
+      "1ra",
+      "2da",
+      "3ra",
+      "4ta",
+      "5ta",
+      "6ta"
+    ],
+    "clases": {
+      "Lunes-1ra": {
+        "materia": "Artistica",
+        "color": "#f39c12"
+      },
+      "Lunes-2da": {
+        "materia": "Artistica",
+        "color": "#f39c12"
+      },
+      "Lunes-3ra": {
+        "materia": "Ingles",
+        "color": "#e74c3c"
+      },
+      "Lunes-4ta": {
+        "materia": "Ingles",
+        "color": "#e74c3c"
+      },
+      "Lunes-5ta": {
+        "materia": "Matematicas",
+        "color": "#e91e63"
+      },
+      "Lunes-6ta": {
+        "materia": "Matematicas",
+        "color": "#e91e63"
+      },
+      "Martes-1ra": {
+        "materia": "Matematicas",
+        "color": "#e91e63"
+      },
+      "Martes-2da": {
+        "materia": "Español",
+        "color": "#1abc9c"
+      },
+      "Martes-3ra": {
+        "materia": "Español",
+        "color": "#1abc9c"
+      },
+      "Martes-4ta": {
+        "materia": "Sociales",
+        "color": "#9b59b6"
+      },
+      "Martes-5ta": {
+        "materia": "Ingles",
+        "color": "#e74c3c"
+      },
+      "Martes-6ta": {
+        "materia": "Biologia",
+        "color": "#27ae60"
+      },
+      "Miércoles-1ra": {
+        "materia": "Matematicas",
+        "color": "#e91e63"
+      },
+      "Miércoles-2da": {
+        "materia": "Matematicas",
+        "color": "#e91e63"
+      },
+      "Miércoles-3ra": {
+        "materia": "Religion",
+        "color": "#e67e22"
+      },
+      "Miércoles-4ta": {
+        "materia": "Quimica",
+        "color": "#3498db"
+      },
+      "Miércoles-5ta": {
+        "materia": "Sociales",
+        "color": "#9b59b6"
+      },
+      "Miércoles-6ta": {
+        "materia": "Sociales",
+        "color": "#9b59b6"
+      },
+      "Jueves-1ra": {
+        "materia": "Pedagogia",
+        "color": "#e74c3c"
+      },
+      "Jueves-2da": {
+        "materia": "Pedagogia",
+        "color": "#e74c3c"
+      },
+      "Jueves-3ra": {
+        "materia": "Ed. Fisica",
+        "color": "#3498db"
+      },
+      "Jueves-4ta": {
+        "materia": "Ed. Fisica",
+        "color": "#3498db"
+      },
+      "Jueves-5ta": {
+        "materia": "Etica",
+        "color": "#e91e63"
+      },
+      "Jueves-6ta": {
+        "materia": "Fisica",
+        "color": "#f39c12"
+      },
+      "Viernes-1ra": {
+        "materia": "Español",
+        "color": "#1abc9c"
+      },
+      "Viernes-2da": {
+        "materia": "Español",
+        "color": "#1abc9c"
+      },
+      "Viernes-3ra": {
+        "materia": "Tecnologia",
+        "color": "#e67e22"
+      },
+      "Viernes-4ta": {
+        "materia": "Tecnologia",
+        "color": "#e67e22"
+      },
+      "Viernes-5ta": {
+        "materia": "Biologia",
+        "color": "#27ae60"
+      },
+      "Viernes-6ta": {
+        "materia": "Biologia",
+        "color": "#27ae60"
+      }
+    }
+  },
+  "listaCompras": [
+    {
+      "nombre": "Diccionario",
+      "cantidad": "1",
+      "categoria": "Libros",
+      "id": 1,
+      "comprado": false
+    }
+  ],
+  "examenes": []
+}
