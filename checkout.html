@@ -4,13 +4,411 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Checkout | PeLoot — Premium Gaming</title>
+  <title>Checkout Seguro | PeLoot — Premium Gaming</title>
   
   <link rel="icon" type="image/png" href="assets/images/logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel='stylesheet' href='css/epic-loot.css' />
+
+  <style>
+    /* ==========================================================================
+       Diseño Premium y Tierno para el Checkout de PeLoot (AliExpress/Amazon Inspired)
+       ========================================================================== */
+
+    /* Sistema de Pasos (Progress Indicator) */
+    .checkout-progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 24px auto 36px auto;
+      max-width: 600px;
+      position: relative;
+      padding: 0 10px;
+    }
+    .checkout-progress-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--border-light);
+      transform: translateY(-50%);
+      z-index: 1;
+      border-radius: 999px;
+    }
+    .checkout-progress-line-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background: var(--primary-blue);
+      transition: width 0.4s ease-in-out;
+      border-radius: 999px;
+    }
+    .progress-step-item {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: var(--transition-smooth);
+      box-shadow: var(--shadow-sm);
+    }
+    .progress-step-item.active .progress-circle {
+      border-color: var(--primary-blue);
+      color: white;
+      background: var(--primary-blue);
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px var(--primary-blue-glow);
+    }
+    .progress-step-item.completed .progress-circle {
+      border-color: var(--accent-green);
+      color: white;
+      background: var(--accent-green);
+    }
+    .progress-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: var(--transition-smooth);
+    }
+    .progress-step-item.active .progress-label {
+      color: var(--primary-blue);
+    }
+    .progress-step-item.completed .progress-label {
+      color: var(--accent-green);
+    }
+
+    /* Cards de Pasos */
+    .checkout-step-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-md);
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .checkout-step-card.active {
+      display: block;
+    }
+    .step-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      border-bottom: 2px dashed var(--border-light);
+      padding-bottom: 18px;
+    }
+    .step-card-header h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Campos de Formulario Elevados */
+    .form-group-premium {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .form-label-premium {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .form-label-premium span {
+      color: #EF4444;
+    }
+    .input-premium {
+      height: 52px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 2px solid var(--border-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background: var(--bg-gradient-2);
+      transition: var(--transition-smooth);
+      width: 100%;
+    }
+    .input-premium:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      background: white;
+      box-shadow: 0 0 0 4px var(--primary-blue-glow);
+    }
+    .input-premium::placeholder {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+    textarea.input-premium {
+      height: 100px;
+      padding: 12px 16px;
+      resize: none;
+    }
+
+    /* Validación Visual */
+    .input-premium.is-valid {
+      border-color: var(--accent-green);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2361C454' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 20px;
+      padding-right: 48px;
+    }
+    .input-premium.is-invalid {
+      border-color: #EF4444;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23EF4444' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 20px;
+      padding-right: 48px;
+    }
+    .validation-feedback {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #EF4444;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Botones de Navegación */
+    .checkout-actions-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .btn-step-next {
+      background: var(--primary-blue);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 1.5;
+      transition: var(--transition-bounce);
+      box-shadow: 0 4px 12px var(--primary-blue-glow);
+    }
+    .btn-step-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(46, 168, 255, 0.4);
+      filter: brightness(1.05);
+    }
+    .btn-step-back {
+      background: white;
+      color: var(--text-body);
+      padding: 16px 24px;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 2px solid var(--border-light);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+      transition: var(--transition-smooth);
+    }
+    .btn-step-back:hover {
+      border-color: var(--text-muted);
+      color: var(--text-main);
+    }
+
+    /* Resumen Acordeón Móvil */
+    .mobile-summary-toggle {
+      display: none;
+      background: white;
+      border: 1px solid var(--border-light);
+      padding: 16px 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+    }
+    .mobile-summary-toggle span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-blue);
+      font-size: 0.95rem;
+    }
+    .mobile-summary-toggle .price-bold {
+      font-weight: 800;
+      color: var(--text-main);
+      font-size: 1.05rem;
+    }
+    .mobile-summary-content {
+      display: none;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-top: none;
+      padding: 0 20px 20px 20px;
+      border-radius: 0 0 16px 16px;
+      margin-top: -24px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Sidebar del Carrito Fija */
+    .cart-summary-sidebar {
+      position: sticky;
+      top: 100px;
+    }
+    .summary-card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Tarjeta de Garantía y Confianza */
+    .trust-badges-card {
+      background: var(--bg-gradient-1);
+      border: 2px dashed rgba(46, 168, 255, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .trust-badge-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: var(--text-body);
+      font-weight: 500;
+    }
+    .trust-badge-item strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .trust-badge-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-blue-light);
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    /* Pasarela Logos */
+    .gateway-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 18px;
+      background: var(--bg-section);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+    }
+    .gateway-logos img {
+      height: 24px;
+      object-fit: contain;
+      filter: grayscale(20%);
+      transition: var(--transition-smooth);
+    }
+    .gateway-logos img:hover {
+      filter: grayscale(0);
+      transform: scale(1.05);
+    }
+
+    /* Botón Móvil Fijo Bottom */
+    .mobile-sticky-bottom-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 16px 20px;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
+      z-index: 999;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Responsividad */
+    @media (max-width: 991px) {
+      .cart-checkout-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .cart-summary-sidebar {
+        display: none; /* Se oculta y se muestra en el acordeón superior */
+      }
+      .mobile-summary-toggle {
+        display: flex;
+      }
+      .checkout-step-card {
+        padding: 24px 20px;
+      }
+      .page-intro {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .mobile-sticky-bottom-bar {
+        display: block;
+      }
+      .page-inner-main {
+        padding-bottom: 100px; /* Evitar que el botón fijo tape contenido */
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -43,111 +441,294 @@
     </div>
   </header>
 
-  <main class="container page-inner-main">
+  <main class="container page-inner-main" style="margin-top: 100px;">
     
     <div class="page-intro">
-      <h1 class="page-inner-title">Checkout Seguro 🔒</h1>
-      <p style="color: var(--text-muted); font-weight: 600;">Ingresa tus datos de envío para preparar tu loot.</p>
+      <h1 class="page-inner-title" style="font-size: 2.2rem; font-weight: 900; letter-spacing: -0.5px;">Completa tu Pedido 🧸</h1>
+      <p style="color: var(--text-muted); font-weight: 600; margin-top: 6px;">Tu PeLoot está casi listo. Completa tus datos de entrega a continuación.</p>
+    </div>
+
+    <!-- Barra de Pasos -->
+    <div class="checkout-progress-container">
+      <div class="checkout-progress-line">
+        <div class="checkout-progress-line-fill" id="progress-line-fill"></div>
+      </div>
+      <div class="progress-step-item active" id="p-step-1">
+        <div class="progress-circle">1</div>
+        <span class="progress-label">Contacto 🧸</span>
+      </div>
+      <div class="progress-step-item" id="p-step-2">
+        <div class="progress-circle">2</div>
+        <span class="progress-label">Envío 📦</span>
+      </div>
+      <div class="progress-step-item" id="p-step-3">
+        <div class="progress-circle">3</div>
+        <span class="progress-label">Pago 💳</span>
+      </div>
+    </div>
+
+    <!-- Acordeón Resumen en Móvil -->
+    <div class="mobile-summary-toggle" id="summary-toggle">
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Ver resumen de compra <span style="font-size: 0.8rem;">▼</span>
+      </span>
+      <span class="price-bold" id="mobile-summary-total">$ 0 COP</span>
+    </div>
+    <div class="mobile-summary-content" id="summary-collapse">
+      <div id="checkout-items-list-mobile" style="display: flex; flex-direction: column; gap: 12px; padding: 12px 0;">
+        <!-- Items inyectados móvil -->
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-top: 10px;">
+        <span>Subtotal</span>
+        <span id="chk-subtotal-mobile">$ 0 COP</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-top: 6px;">
+        <span>Envío Internacional</span>
+        <span style="color: var(--accent-green);">Gratis 🚚</span>
+      </div>
     </div>
 
     <div class="cart-checkout-layout">
       
+      <!-- Columna Principal de Formularios -->
       <div class="checkout-form-section">
         
-        <h3 style="margin-bottom: 24px; font-size: 1.3rem;">1. Datos de Contacto</h3>
-        <div class="checkout-grid-2">
-          <label for="chk-name" class="sr-only">Nombre completo</label>
-          <input type="text" id="chk-name" placeholder="Nombre completo *" class="checkout-input" required>
-          
-          <label for="chk-email" class="sr-only">Correo electrónico</label>
-          <input type="email" id="chk-email" placeholder="Correo electrónico *" class="checkout-input" required>
-          
-          <label for="chk-phone" class="sr-only">WhatsApp (para el envío)</label>
-          <input type="tel" id="chk-phone" placeholder="WhatsApp (para el envío) *" class="checkout-input" required>
-          
-          <label for="chk-id" class="sr-only">Cédula / ID</label>
-          <input type="text" id="chk-id" placeholder="Cédula / ID (para transportadora) *" class="checkout-input" required>
+        <!-- ================= PASO 1: CONTACTO ================= -->
+        <div class="checkout-step-card active" id="step-1">
+          <div class="step-card-header">
+            <div style="font-size: 1.8rem;">🧸</div>
+            <div>
+              <h2>Datos de Contacto</h2>
+              <p style="color: var(--text-muted); font-size: 0.82rem; font-weight: 600; margin: 2px 0 0 0;">Ingresa tu información básica de comprador.</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group-premium" style="grid-column: 1 / -1;">
+              <label for="chk-name" class="form-label-premium">Nombre y Apellido <span>*</span></label>
+              <input type="text" id="chk-name" autocomplete="name" placeholder="Ej: Juan Esteban Alvarez" class="input-premium" required>
+              <div class="validation-feedback" id="val-name">Por favor ingresa tu nombre completo</div>
+            </div>
+
+            <div class="form-group-premium">
+              <label for="chk-email" class="form-label-premium">Correo Electrónico <span>*</span></label>
+              <input type="email" id="chk-email" autocomplete="email" placeholder="Ej: juan@gmail.com" class="input-premium" required>
+              <div class="validation-feedback" id="val-email">Ingresa un correo electrónico válido</div>
+            </div>
+
+            <div class="form-group-premium">
+              <label for="chk-phone" class="form-label-premium">Celular / WhatsApp <span>*</span></label>
+              <input type="tel" id="chk-phone" autocomplete="tel" placeholder="Ej: 3216499890" class="input-premium" required>
+              <div class="validation-feedback" id="val-phone">Ingresa tu número celular (10 dígitos)</div>
+            </div>
+
+            <div class="form-group-premium" style="grid-column: 1 / -1;">
+              <label for="chk-id" class="form-label-premium">Cédula / Documento de Identidad <span>*</span></label>
+              <input type="text" id="chk-id" placeholder="Ej: 1020485932" class="input-premium" required>
+              <div class="validation-feedback" id="val-id">Requerido para la transportadora nacional</div>
+            </div>
+          </div>
+
+          <div class="checkout-actions-row">
+            <button type="button" class="btn-step-next" id="btn-to-step2">
+              Continuar al Envío 📦 
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
         </div>
 
-        <h3 style="margin-bottom: 24px; font-size: 1.3rem;">2. Dirección de Envío</h3>
-        <div class="checkout-grid-2">
-          <label for="chk-address" class="sr-only">Dirección completa</label>
-          <input type="text" id="chk-address" placeholder="Dirección completa (Calle, #, Apto) *" class="checkout-input" style="grid-column: 1/-1;" required>
-          
-          <label for="chk-neighborhood" class="sr-only">Barrio</label>
-          <input type="text" id="chk-neighborhood" placeholder="Barrio *" class="checkout-input" required>
-          
-          <label for="chk-city" class="sr-only">Ciudad</label>
-          <input type="text" id="chk-city" placeholder="Ciudad *" class="checkout-input" required>
-          
-          <label for="chk-state" class="sr-only">Departamento</label>
-          <input type="text" id="chk-state" placeholder="Departamento *" class="checkout-input" required>
-          
-          <label for="chk-zip" class="sr-only">Código Postal</label>
-          <input type="text" id="chk-zip" placeholder="Código Postal" class="checkout-input">
-          
-          <label for="chk-country" class="sr-only">País</label>
-          <select id="chk-country" class="checkout-input" required>
-            <option value="Colombia" selected>Colombia</option>
-            <option value="México">México</option>
-            <option value="España">España</option>
-            <option value="Chile">Chile</option>
-            <option value="Argentina">Argentina</option>
-            <option value="Perú">Perú</option>
-            <option value="Otro">Otro País</option>
-          </select>
-          
-          <label for="chk-notes" class="sr-only">Notas adicionales</label>
-          <textarea id="chk-notes" placeholder="Notas adicionales (ej: Casa blanca, dejar en portería...)" class="checkout-input" style="grid-column: 1/-1; height: 80px; padding: 12px;"></textarea>
+        <!-- ================= PASO 2: DIRECCIÓN ================= -->
+        <div class="checkout-step-card" id="step-2">
+          <div class="step-card-header">
+            <div style="font-size: 1.8rem;">📦</div>
+            <div>
+              <h2>Dirección de Envío</h2>
+              <p style="color: var(--text-muted); font-size: 0.82rem; font-weight: 600; margin: 2px 0 0 0;">¿A dónde enviamos tu peluche coleccionable?</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group-premium" style="grid-column: 1 / -1;">
+              <label for="chk-country" class="form-label-premium">País de Destino <span>*</span></label>
+              <select id="chk-country" class="input-premium" required>
+                <option value="Colombia" selected>Colombia 🇨🇴</option>
+                <option value="México">México 🇲🇽</option>
+                <option value="España">España 🇪🇸</option>
+                <option value="Chile">Chile 🇨🇱</option>
+                <option value="Argentina">Argentina 🇦🇷</option>
+                <option value="Perú">Perú 🇵🇪</option>
+                <option value="Otro">Otro País</option>
+              </select>
+            </div>
+
+            <!-- Selectores Dinámicos de Colombia -->
+            <div class="form-group-premium" id="state-select-wrapper">
+              <label for="chk-state-select" class="form-label-premium">Departamento <span>*</span></label>
+              <select id="chk-state-select" class="input-premium" required>
+                <option value="">Selecciona Departamento...</option>
+              </select>
+              <div class="validation-feedback" id="val-state-select">Selecciona tu departamento</div>
+            </div>
+
+            <div class="form-group-premium" id="city-select-wrapper">
+              <label for="chk-city-select" class="form-label-premium">Municipio / Ciudad <span>*</span></label>
+              <select id="chk-city-select" class="input-premium" required>
+                <option value="">Selecciona Ciudad...</option>
+              </select>
+              <div class="validation-feedback" id="val-city-select">Selecciona tu municipio</div>
+            </div>
+
+            <!-- Inputs de Texto Fallback (Ocultos por defecto para otros países) -->
+            <div class="form-group-premium" id="state-text-wrapper" style="display: none;">
+              <label for="chk-state" class="form-label-premium">Estado / Departamento <span>*</span></label>
+              <input type="text" id="chk-state" placeholder="Ej: Antioquia" class="input-premium">
+              <div class="validation-feedback" id="val-state">Ingresa tu estado o región</div>
+            </div>
+
+            <div class="form-group-premium" id="city-text-wrapper" style="display: none;">
+              <label for="chk-city" class="form-label-premium">Ciudad <span>*</span></label>
+              <input type="text" id="chk-city" placeholder="Ej: Medellín" class="input-premium">
+              <div class="validation-feedback" id="val-city">Ingresa tu ciudad</div>
+            </div>
+
+            <div class="form-group-premium" style="grid-column: 1 / -1;">
+              <label for="chk-address" class="form-label-premium">Dirección Exacta (Calle, Carrera, #, Casa, Apto) <span>*</span></label>
+              <input type="text" id="chk-address" autocomplete="street-address" placeholder="Ej: Calle 46 # 50-57, Conjunto Residencial, Apto 402" class="input-premium" required>
+              <div class="validation-feedback" id="val-address">Ingresa la dirección detallada de entrega</div>
+            </div>
+
+            <div class="form-group-premium">
+              <label for="chk-neighborhood" class="form-label-premium">Barrio / Sector <span>*</span></label>
+              <input type="text" id="chk-neighborhood" placeholder="Ej: Poblado, Belén, Laureles" class="input-premium" required>
+              <div class="validation-feedback" id="val-neighborhood">Ingresa el nombre del barrio</div>
+            </div>
+
+            <div class="form-group-premium">
+              <label for="chk-zip" class="form-label-premium">Código Postal</label>
+              <input type="text" id="chk-zip" autocomplete="postal-code" placeholder="Ej: 050012 (Opcional)" class="input-premium">
+            </div>
+
+            <div class="form-group-premium" style="grid-column: 1 / -1;">
+              <label for="chk-notes" class="form-label-premium">Referencias adicionales</label>
+              <textarea id="chk-notes" placeholder="Ej: Casa de rejas verdes, frente al parque, o dejar en portería." class="input-premium"></textarea>
+            </div>
+          </div>
+
+          <div class="checkout-actions-row">
+            <button type="button" class="btn-step-back" id="btn-back-to-step1">⬅️ Volver</button>
+            <button type="button" class="btn-step-next" id="btn-to-step3">
+              Continuar al Pago 💳 
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
         </div>
 
-        <div id="auth-warning" style="display:none; background: var(--bg-gradient-1); border: 1px solid var(--primary-blue-light); padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px; text-align: center;">
-          <p style="color: var(--primary-blue); font-weight: 800; margin-bottom: 12px; font-size: 1rem;">Necesitas iniciar sesión para comprar</p>
-          <button id="btn-force-login" class="btn-secondary-gaming" style="width: 100%; justify-content: center; font-weight: 800;">Iniciar Sesión con Google</button>
-          <div style="margin-top: 14px; background: #FFF5F5; border: 1px solid #FEB2B2; padding: 12px; border-radius: 8px; text-align: left; font-size: 0.8rem; color: #C53030; line-height: 1.4; font-weight: 700;">
-            ⚠️ <strong>¿Estás dentro de TikTok o Instagram?</strong><br>
-            Google bloquea el inicio de sesión dentro de estas apps. Para poder iniciar sesión y comprar, toca los 3 puntos (•••) en la esquina superior derecha y selecciona <strong>"Abrir en el navegador"</strong> (Chrome/Safari).
+        <!-- ================= PASO 3: PAGO ================= -->
+        <div class="checkout-step-card" id="step-3">
+          <div class="step-card-header">
+            <div style="font-size: 1.8rem;">💳</div>
+            <div>
+              <h2>Método de Pago Seguro</h2>
+              <p style="color: var(--text-muted); font-size: 0.82rem; font-weight: 600; margin: 2px 0 0 0;">Procesa tu pago 100% automático mediante Mercado Pago.</p>
+            </div>
+          </div>
+
+          <div style="border: 2px solid var(--primary-blue-light); border-radius: 16px; padding: 22px; background: rgba(46, 168, 255, 0.02); text-align: center; margin-bottom: 24px;">
+            <p style="font-weight: 700; color: var(--text-main); margin-bottom: 12px; font-size: 0.95rem;">
+              💳 Pasarela oficial integrada Mercado Pago Colombia
+            </p>
+            <p style="font-size: 0.82rem; color: var(--text-body); line-height: 1.5; max-width: 500px; margin: 0 auto;">
+              Podrás pagar al instante usando tu cuenta de <strong>PSE (Débito)</strong>, transferir desde <strong>Nequi</strong> o <strong>Daviplata</strong>, o utilizar tus <strong>Tarjetas de Crédito / Débito</strong> (Visa, Mastercard, Amex, Diners) con total seguridad.
+            </p>
+
+            <div class="gateway-logos">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="display:none;">
+              <!-- Logos de PSE, Nequi y Daviplata locales -->
+              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_PSE.png" alt="PSE" style="height: 28px;">
+              <img src="https://assets.website-files.com/60ddf613c7d67f1cfd145c26/62b60408d66df2e7b0ee56d1_Logo-Nequi-png.png" alt="Nequi" style="height: 24px;">
+              <img src="https://vignette.wikia.nocookie.net/logos/images/7/77/Daviplata_Logo.png/revision/latest" alt="Daviplata" style="height: 24px; error: this.style.display='none';" onerror="this.src='https://assets.change.org/photos/7/un/un/JBuNUNgJbQyXyqy-1600x900-noPad.jpg?1620247346'; this.style.height='24px';">
+            </div>
+          </div>
+
+          <!-- Cuadro de Confianza y Emojis Tiernos -->
+          <div class="trust-badges-card">
+            <div class="trust-badge-item">
+              <div class="trust-badge-icon">🛡️</div>
+              <div>
+                <strong>Compra 100% Protegida:</strong> Tu transacción se encripta de punta a punta con certificado SSL. Tus datos financieros nunca se guardan en nuestro servidor.
+              </div>
+            </div>
+            <div class="trust-badge-item">
+              <div class="trust-badge-icon">🧸</div>
+              <div>
+                <strong>Garantía de Felicidad:</strong> Estamos seguros de que te encantará tu coleccionable gaming. Si tienes algún inconveniente, te respaldamos con devoluciones sin vueltas.
+              </div>
+            </div>
+            <div class="trust-badge-item">
+              <div class="trust-badge-icon">🚚</div>
+              <div>
+                <strong>Envío Gratis con Rastreabilidad:</strong> Despachamos tu pedido directo a tu dirección con código de seguimiento en tiempo real.
+              </div>
+            </div>
+          </div>
+
+          <div class="checkout-actions-row">
+            <button type="button" class="btn-step-back" id="btn-back-to-step2">⬅️ Volver</button>
+            <button type="button" id="btn-confirm-order" class="btn-primary-gaming" style="flex: 1.5; padding: 18px; font-size: 1.05rem; background: var(--accent-green); color: white; box-shadow: 0 4px 14px rgba(97, 196, 84, 0.4); font-weight: 800; border-radius: 14px; text-transform: uppercase;">
+              Confirmar y Pagar Pedido 💳
+            </button>
           </div>
         </div>
 
       </div>
 
+      <!-- Columna Derecha del Carrito (Resumen Escritorio) -->
       <div class="cart-summary-sidebar">
         <div class="summary-card">
-          <h3 style="margin-bottom: 24px; border-bottom: 1px solid var(--bg-main); padding-bottom: 16px;">Resumen del Pedido</h3>
+          <h3 style="margin-bottom: 20px; border-bottom: 2px solid var(--bg-main); padding-bottom: 16px; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.25rem;">
+            Resumen del Pedido 🛒
+          </h3>
           
-          <div id="checkout-items-list" style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto;">
-            <!-- Items injected by JS -->
+          <div id="checkout-items-list" style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 14px; max-height: 350px; overflow-y: auto; padding-right: 4px;">
+            <!-- Items inyectados por JS -->
           </div>
 
-          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 600; color: var(--text-muted);">
-            <span>Subtotal</span>
-            <span id="chk-subtotal">$ 0 COP</span>
-          </div>
-          
-          <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 600; color: var(--text-muted);">
-            <span>Envío Internacional</span>
-            <span style="color: #10B981;">Gratis</span>
+          <div style="border-top: 1px solid var(--border-light); padding-top: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <div class="summary-row" style="display: flex; justify-content: space-between; font-weight: 600; color: var(--text-body); font-size: 0.95rem;">
+              <span>Subtotal</span>
+              <span id="chk-subtotal">$ 0 COP</span>
+            </div>
+            
+            <div class="summary-row" style="display: flex; justify-content: space-between; font-weight: 600; color: var(--text-body); font-size: 0.95rem;">
+              <span>Envío Internacional</span>
+              <span style="color: var(--accent-green); font-weight: 700;">Gratis</span>
+            </div>
+
+            <div class="summary-row total-row" style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 16px; border-top: 2px solid var(--border-light); font-size: 1.5rem; font-weight: 900; color: var(--primary-blue); font-family: 'Poppins', sans-serif;">
+              <span>Total</span>
+              <span id="chk-total">$ 0 COP</span>
+            </div>
           </div>
 
-          <div class="summary-row total-row" style="display: flex; justify-content: space-between; margin-bottom: 32px; font-size: 1.5rem; font-weight: 900; color: var(--primary-blue);">
-            <span>Total</span>
-            <span id="chk-total">$ 0 COP</span>
-          </div>
-
-          <button id="btn-confirm-order" class="btn-primary-gaming" style="width: 100%; justify-content: center; padding: 18px; font-size: 1.1rem; background: var(--accent-green); color: white; box-shadow: 0 4px 14px rgba(97, 196, 84, 0.4); display: flex; align-items: center; gap: 8px;">
-            Confirmar Pedido <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
-          
           <div style="margin-top: 24px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Tus datos están seguros
+            Tus datos de compra están encriptados y seguros
           </div>
         </div>
       </div>
 
     </div>
   </main>
+
+  <!-- Botón Fijo Inferior en Celulares (Visible solo en móvil) -->
+  <div class="mobile-sticky-bottom-bar" id="mobile-sticky-bar">
+    <button type="button" id="btn-mobile-action" class="btn-primary-gaming" style="width: 100%; justify-content: center; padding: 16px; font-size: 1rem; border-radius: 12px; font-weight: 800;">
+      Continuar al Envío 📦
+    </button>
+  </div>
 
   <footer class="footer-gaming">
     <div class="container">
@@ -169,13 +750,13 @@
         <div class="payment-badges-gaming">
           <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
           <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_PSE.png" alt="PSE">
         </div>
       </div>
     </div>
   </footer>
 
-  <script type="module" src="js/checkout.js?v=2.1"></script>
+  <script type="module" src="js/checkout.js?v=3.0"></script>
   <script type="module">
     import { initHeaderAndAuth } from './js/ui-init.js';
     initHeaderAndAuth();
