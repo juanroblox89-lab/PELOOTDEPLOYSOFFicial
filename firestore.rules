@@ -32,14 +32,16 @@ service cloud.firestore {
     
     // Pedidos (Hardened):
     match /orders/{orderId} {
-      // Crear pedido: Usuario autenticado, debe ser el dueño, campos obligatorios validados
-      allow create: if request.auth != null 
-        && request.resource.data.userId == request.auth.uid
-        && request.resource.data.total is number
-        && request.resource.data.fullName is string
-        && request.resource.data.phone is string
-        && request.resource.data.status == 'pending'
-        && request.resource.data.createdAt == request.time; // Obliga a usar Server Timestamp
+      // Crear pedido: Usuario autenticado (dueño) o compra de invitado (isGuest: true)
+      allow create: if (
+        (request.auth != null && request.resource.data.userId == request.auth.uid && request.resource.data.isGuest == false) ||
+        (request.resource.data.isGuest == true && request.resource.data.userId.matches('^guest_.*'))
+      )
+      && request.resource.data.total is number
+      && request.resource.data.fullName is string
+      && request.resource.data.phone is string
+      && request.resource.data.status == 'pending'
+      && request.resource.data.createdAt == request.time; // Obliga a usar Server Timestamp
 
       // Leer pedido: Solo el dueño o un administrador
       allow read: if request.auth != null && (
