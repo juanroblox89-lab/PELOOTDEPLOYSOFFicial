@@ -279,8 +279,7 @@ function validateField(inputEl) {
     isValid = false;
     if (feedbackEl) {
       if (id === 'chk-phone') {
-        const country = el.fCountry ? el.fCountry.value : 'Colombia';
-        feedbackEl.textContent = (country === 'Colombia') ? "Ingresa tu número celular (10 dígitos)" : "Ingresa tu número celular de contacto";
+        feedbackEl.textContent = "Ingresa tu número celular o WhatsApp";
       } else if (id === 'chk-id') {
         const country = el.fCountry ? el.fCountry.value : 'Colombia';
         feedbackEl.textContent = (country === 'Colombia') ? "Cédula requerida para la entrega de tu pedido" : "Documento de identidad requerido para la entrega";
@@ -490,29 +489,9 @@ function setupColombiaDropdowns() {
         if (el.fCityText) el.fCityText.setAttribute('required', '');
       }
 
-      // Actualizar placeholder del teléfono y feedback
+      // Actualizar placeholder del teléfono
       if (el.fPhone) {
-        const phonePlaceholders = {
-          "Colombia": "Ej: 3136374267 (+57)",
-          "México": "Ej: 5512345678 (+52)",
-          "España": "Ej: 612345678 (+34)",
-          "Chile": "Ej: 912345678 (+56)",
-          "Argentina": "Ej: 1112345678 (+54)",
-          "Perú": "Ej: 912345678 (+51)",
-          "El Salvador": "Ej: 61234567 (+503)",
-          "Guatemala": "Ej: 51234567 (+502)",
-          "Costa Rica": "Ej: 81234567 (+506)",
-          "Honduras": "Ej: 91234567 (+504)",
-          "Nicaragua": "Ej: 81234567 (+505)",
-          "Ecuador": "Ej: 912345678 (+593)",
-          "Bolivia": "Ej: 71234567 (+591)",
-          "Paraguay": "Ej: 912345678 (+595)",
-          "Uruguay": "Ej: 91234567 (+598)",
-          "Venezuela": "Ej: 4123456789 (+58)",
-          "Rep. Dominicana": "Ej: 8091234567 (+1)",
-          "USA": "Ej: 2025550143 (+1)"
-        };
-        el.fPhone.placeholder = phonePlaceholders[country] || "Ej: +503 61234567 (mínimo 6 dígitos)";
+        el.fPhone.placeholder = "Ingresa tu celular / WhatsApp";
       }
 
       // Re-validar teléfono y campos de locación al cambiar de país
