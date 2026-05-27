@@ -10,7 +10,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-aut
 
 const firebaseConfig = {
   apiKey: "AIzaSyCkxXf93VlfWb9F6MtYk0FYpPFoBMMqBGA",
-  authDomain: "www.peloot.shop",
+  authDomain: "pelootdata.firebaseapp.com",
   projectId: "pelootdata",
   storageBucket: "pelootdata.firebasestorage.app",
   messagingSenderId: "1037452690351",
