@@ -277,6 +277,27 @@ function validateField(inputEl) {
 
   if (inputEl.hasAttribute('required') && !val) {
     isValid = false;
+    if (feedbackEl) {
+      if (id === 'chk-phone') {
+        const country = el.fCountry ? el.fCountry.value : 'Colombia';
+        feedbackEl.textContent = (country === 'Colombia') ? "Ingresa tu número celular (10 dígitos)" : "Ingresa tu número celular de contacto";
+      } else if (id === 'chk-id') {
+        const country = el.fCountry ? el.fCountry.value : 'Colombia';
+        feedbackEl.textContent = (country === 'Colombia') ? "Cédula requerida para la entrega de tu pedido" : "Documento de identidad requerido para la entrega";
+      } else if (id === 'chk-name') {
+        feedbackEl.textContent = "Por favor ingresa tu nombre completo";
+      } else if (id === 'chk-email') {
+        feedbackEl.textContent = "Ingresa tu correo electrónico";
+      } else if (id === 'chk-address') {
+        feedbackEl.textContent = "Ingresa la dirección detallada de entrega";
+      } else if (id === 'chk-neighborhood') {
+        feedbackEl.textContent = "Ingresa el nombre del barrio o sector";
+      } else if (id === 'chk-state-select' || id === 'chk-state') {
+        feedbackEl.textContent = "Ingresa tu estado o departamento";
+      } else if (id === 'chk-city-select' || id === 'chk-city') {
+        feedbackEl.textContent = "Ingresa tu ciudad o municipio";
+      }
+    }
   }
 
   // Validaciones Especiales
@@ -408,6 +429,36 @@ function initFormState() {
   }
 }
 
+function updateGatewayLogos(country) {
+  const container = document.getElementById('gateway-logos-container');
+  if (!container) return;
+
+  const isColombia = country === 'Colombia';
+  
+  const visaLogo = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg';
+  const mastercardLogo = 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg';
+  const amexLogo = 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg';
+  const pseLogo = 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Logo_PSE.svg';
+  const nequiLogo = 'https://logodownload.org/wp-content/uploads/2020/09/nequi-logo.png';
+  const daviplataLogo = 'https://www.agrocampo.com.co/media/wysiwyg/Daviplata.png';
+
+  let html = `
+    <img src="${visaLogo}" alt="Visa" style="height: 24px;">
+    <img src="${mastercardLogo}" alt="Mastercard" style="height: 24px;">
+    <img src="${amexLogo}" alt="American Express" style="height: 18px;">
+  `;
+
+  if (isColombia) {
+    html += `
+      <img src="${pseLogo}" alt="PSE" style="height: 28px;">
+      <img src="${nequiLogo}" alt="Nequi" style="height: 24px;">
+      <img src="${daviplataLogo}" alt="Daviplata" style="height: 24px;">
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
 // --- Manejo Dinámico de Ubicaciones en Colombia ---
 function setupColombiaDropdowns() {
   const departments = Object.keys(DEPARTAMENTOS_COLOMBIA).sort();
@@ -512,6 +563,9 @@ function setupColombiaDropdowns() {
 
       // Re-validar teléfono y campos de locación al cambiar de país
       validateField(el.fPhone);
+
+      // Actualizar logos de pasarela de pago dinámicamente
+      updateGatewayLogos(country);
     };
   }
 

@@ -383,6 +383,12 @@
     }
 
     /* Responsividad */
+    .checkout-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
     @media (max-width: 991px) {
       .cart-checkout-layout {
         grid-template-columns: 1fr;
@@ -406,6 +412,22 @@
       }
       .page-inner-main {
         padding-bottom: 100px; /* Evitar que el botón fijo tape contenido */
+      }
+    }
+
+    @media (max-width: 576px) {
+      .checkout-grid-2col {
+        grid-template-columns: 1fr;
+      }
+      .checkout-actions-row {
+        flex-direction: column-reverse;
+        gap: 12px;
+      }
+      .btn-step-next, .btn-primary-gaming, .btn-blue-gaming, .btn-step-back {
+        width: 100%;
+        flex: none !important;
+        white-space: normal !important;
+        text-align: center;
       }
     }
   </style>
@@ -504,7 +526,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="checkout-grid-2col">
             <div class="form-group-premium" style="grid-column: 1 / -1;">
               <label for="chk-name" class="form-label-premium">Nombre y Apellido <span>*</span></label>
               <input type="text" id="chk-name" autocomplete="name" placeholder="Ej: Juan Esteban Alvarez" class="input-premium" required>
@@ -520,13 +542,13 @@
             <div class="form-group-premium">
               <label for="chk-phone" class="form-label-premium">Celular / WhatsApp <span>*</span></label>
               <input type="tel" id="chk-phone" autocomplete="tel" placeholder="Ej: 3216499890" class="input-premium" required>
-              <div class="validation-feedback" id="val-phone">Ingresa tu número celular (10 dígitos)</div>
+              <div class="validation-feedback" id="val-phone">Ingresa tu número celular / WhatsApp</div>
             </div>
 
             <div class="form-group-premium" style="grid-column: 1 / -1;">
-              <label for="chk-id" class="form-label-premium">Cédula / Documento de Identidad <span>*</span></label>
+              <label for="chk-id" class="form-label-premium">Documento de Identidad (Cédula, DNI, etc.) <span>*</span></label>
               <input type="text" id="chk-id" placeholder="Ej: 1020485932" class="input-premium" required>
-              <div class="validation-feedback" id="val-id">Requerido para la transportadora nacional</div>
+              <div class="validation-feedback" id="val-id">Requerido para el despacho y entrega segura</div>
             </div>
           </div>
 
@@ -548,7 +570,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="checkout-grid-2col">
             <div class="form-group-premium" style="grid-column: 1 / -1;">
               <label for="chk-country" class="form-label-premium">País de Destino <span>*</span></label>
               <select id="chk-country" class="input-premium" required>
@@ -648,20 +670,14 @@
 
           <div style="border: 2px solid var(--primary-blue-light); border-radius: 16px; padding: 22px; background: rgba(46, 168, 255, 0.02); text-align: center; margin-bottom: 24px;">
             <p style="font-weight: 700; color: var(--text-main); margin-bottom: 12px; font-size: 0.95rem;">
-              💳 Pasarela oficial integrada Mercado Pago Colombia
+              💳 Pasarela de Pago Segura Mercado Pago
             </p>
             <p style="font-size: 0.82rem; color: var(--text-body); line-height: 1.5; max-width: 500px; margin: 0 auto;">
-              Podrás pagar al instante usando tu cuenta de <strong>PSE (Débito)</strong>, transferir desde <strong>Nequi</strong> o <strong>Daviplata</strong>, o utilizar tus <strong>Tarjetas de Crédito / Débito</strong> (Visa, Mastercard, Amex, Diners) con total seguridad.
+              Podrás pagar de manera segura usando <strong>Tarjetas de Crédito o Débito</strong> (Visa, Mastercard, Amex), o mediante métodos locales como <strong>PSE</strong>, <strong>Nequi</strong> o <strong>Daviplata</strong> (si te encuentras en Colombia).
             </p>
 
-            <div class="gateway-logos">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="display:none;">
-              <!-- Logos de PSE, Nequi y Daviplata locales -->
-              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_PSE.png" alt="PSE" style="height: 28px;">
-              <img src="https://assets.website-files.com/60ddf613c7d67f1cfd145c26/62b60408d66df2e7b0ee56d1_Logo-Nequi-png.png" alt="Nequi" style="height: 24px;">
-              <img src="https://vignette.wikia.nocookie.net/logos/images/7/77/Daviplata_Logo.png/revision/latest" alt="Daviplata" style="height: 24px; error: this.style.display='none';" onerror="this.src='https://assets.change.org/photos/7/un/un/JBuNUNgJbQyXyqy-1600x900-noPad.jpg?1620247346'; this.style.height='24px';">
+            <div class="gateway-logos" id="gateway-logos-container">
+              <!-- Inyectado dinámicamente según el país -->
             </div>
           </div>
 
@@ -768,15 +784,15 @@
       <div class="footer-bottom-gaming">
         <p>&copy; 2026 PeLoot. Todos los derechos reservados.</p>
         <div class="payment-badges-gaming">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
           <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_PSE.png" alt="PSE">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="American Express" style="height: 18px;">
         </div>
       </div>
     </div>
   </footer>
 
-  <script type="module" src="js/checkout.js?v=3.15"></script>
+  <script type="module" src="js/checkout.js?v=3.16"></script>
   <script type="module">
     import { initHeaderAndAuth } from './js/ui-init.js';
     initHeaderAndAuth();
