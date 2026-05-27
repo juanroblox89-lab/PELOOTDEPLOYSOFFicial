@@ -65,7 +65,11 @@ async function sendSaleNotificationEmail(orderId, orderData, paymentId) {
     const recipient = process.env.EMAIL_TO || emailUser;
     
     // Limpieza de caracteres no numéricos del teléfono para link de WhatsApp directo
-    const cleanPhone = String(orderData.phone || '').replace(/[^\d]/g, '');
+    let cleanPhone = String(orderData.phone || '').replace(/[^\d]/g, '');
+    // Soporte de compatibilidad legacy: si es un número de 10 dígitos (Colombia sin indicativo), añadir '57'
+    if (cleanPhone.length === 10 && !cleanPhone.startsWith('57')) {
+      cleanPhone = '57' + cleanPhone;
+    }
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -172,8 +176,8 @@ async function sendSaleNotificationEmail(orderId, orderData, paymentId) {
               <p style="margin: 0 0 8px 0;"><strong>Comprador:</strong> ${orderData.fullName}</p>
               <p style="margin: 0 0 8px 0;">
                 <strong>WhatsApp / Celular:</strong> 
-                <a href="https://wa.me/57${cleanPhone}" target="_blank" style="color: #2EA8FF; font-weight: 700; text-decoration: none;">
-                  +57 ${orderData.phone} 💬 (Chatear)
+                <a href="https://wa.me/${cleanPhone}" target="_blank" style="color: #2EA8FF; font-weight: 700; text-decoration: none;">
+                  +${cleanPhone} 💬 (Chatear)
                 </a>
               </p>
               <p style="margin: 0 0 8px 0;"><strong>Email:</strong> ${orderData.email}</p>

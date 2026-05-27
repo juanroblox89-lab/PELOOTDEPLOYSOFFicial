@@ -964,7 +964,10 @@ function renderOrders(orders) {
     const countryStr = order.country || order.department || '—';
     const paymentMethod = order.paymentMethod || 'No especificado';
     
-    const cleanPhone = (order.phone || '').replace(/\D/g, '');
+    let cleanPhone = (order.phone || '').replace(/\D/g, '');
+    if (cleanPhone.length === 10 && !cleanPhone.startsWith('57')) {
+      cleanPhone = '57' + cleanPhone;
+    }
     const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=Hola%20${encodeURIComponent(order.fullName||'')},%20te%20escribimos%20de%20PeLoot%20respecto%20a%20tu%20pedido%20%23${order.id.slice(0,8).toUpperCase()}` : '#';
 
     const statusMap = { pending: '⌛ Pendiente', confirmed: '✅ Confirmado', shipped: '🚚 Enviado' };

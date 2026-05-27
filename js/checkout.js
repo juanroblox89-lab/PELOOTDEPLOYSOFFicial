@@ -249,6 +249,20 @@ async function renderSummary() {
   if (el.totalDesktop) el.totalDesktop.textContent = formattedTotal;
   if (el.mobileSummaryTotal) el.mobileSummaryTotal.textContent = formattedTotal;
 
+  // Mostrar u ocultar la advertencia de moneda de Mercado Pago de forma dinámica
+  const currencyAlert = document.getElementById('currency-alert-box');
+  if (currencyAlert) {
+    if (activeCurrency.code !== 'COP') {
+      currencyAlert.style.display = 'block';
+      const userCurrs = currencyAlert.querySelectorAll('.alert-user-currency');
+      userCurrs.forEach(el => {
+        el.textContent = `${activeCurrency.code} (${activeCurrency.symbol})`;
+      });
+    } else {
+      currencyAlert.style.display = 'none';
+    }
+  }
+
   console.log('[PeLoot] ✅ Resumen renderizado con éxito. Total:', finalTotal);
 }
 
@@ -282,16 +296,26 @@ function validateField(inputEl) {
 
     if (id === 'chk-phone') {
       const cleanPhone = val.replace(/[^\d]/g, '');
-      const isColombia = el.fCountry.value === 'Colombia';
-      if (isColombia) {
+      const country = el.fCountry.value;
+      if (country === 'Colombia') {
         if (cleanPhone.length !== 10) {
           isValid = false;
-          if (feedbackEl) feedbackEl.textContent = "El número celular de Colombia debe tener exactamente 10 dígitos (Ej: 3216499890)";
+          if (feedbackEl) feedbackEl.textContent = "El número celular de Colombia debe tener exactamente 10 dígitos (Ej: 3136374267)";
+        }
+      } else if (country === 'México' || country === 'Argentina') {
+        if (cleanPhone.length !== 10) {
+          isValid = false;
+          if (feedbackEl) feedbackEl.textContent = `El número celular de ${country} debe tener 10 dígitos (Ej: 5512345678)`;
+        }
+      } else if (country === 'Perú' || country === 'Chile' || country === 'España') {
+        if (cleanPhone.length !== 9) {
+          isValid = false;
+          if (feedbackEl) feedbackEl.textContent = `El número celular de ${country} debe tener 9 dígitos`;
         }
       } else {
-        if (cleanPhone.length < 7) {
+        if (cleanPhone.length < 6) {
           isValid = false;
-          if (feedbackEl) feedbackEl.textContent = "Ingresa un número telefónico válido (mínimo 7 dígitos)";
+          if (feedbackEl) feedbackEl.textContent = "Ingresa un número telefónico válido (mínimo 6 dígitos)";
         }
       }
     }
@@ -397,6 +421,7 @@ function setupColombiaDropdowns() {
     };
   }
 
+
   // Manejo del Cambio de País
   if (el.fCountry) {
     el.fCountry.onchange = () => {
@@ -430,6 +455,19 @@ function setupColombiaDropdowns() {
         if (el.fCitySelect) el.fCitySelect.removeAttribute('required');
         if (el.fStateText) el.fStateText.setAttribute('required', '');
         if (el.fCityText) el.fCityText.setAttribute('required', '');
+      }
+
+      // Actualizar placeholder del teléfono y feedback
+      if (el.fPhone) {
+        const phonePlaceholders = {
+          "Colombia": "Ej: 3136374267 (+57)",
+          "México": "Ej: 5512345678 (+52)",
+          "España": "Ej: 612345678 (+34)",
+          "Chile": "Ej: 912345678 (+56)",
+          "Argentina": "Ej: 1112345678 (+54)",
+          "Perú": "Ej: 912345678 (+51)"
+        };
+        el.fPhone.placeholder = phonePlaceholders[country] || "Ej: +503 61234567 (mínimo 6 dígitos)";
       }
 
       // Re-validar teléfono y campos de locación al cambiar de país
@@ -634,13 +672,29 @@ async function confirmOrder() {
     const stateValue = isColombia ? el.fStateSelect.value : el.fStateText.value.trim();
     const cityValue = isColombia ? el.fCitySelect.value : el.fCityText.value.trim();
 
+    // Formatear el teléfono de manera internacional y robusta según el país
+    const COUNTRY_DIAL_CODES = {
+      "Colombia": "57",
+      "México": "52",
+      "España": "34",
+      "Chile": "56",
+      "Argentina": "54",
+      "Perú": "51"
+    };
+    const rawPhone = el.fPhone.value.trim();
+    let cleanPhone = rawPhone.replace(/[^\d]/g, '');
+    const dialCode = COUNTRY_DIAL_CODES[el.fCountry.value];
+    if (dialCode && !cleanPhone.startsWith(dialCode)) {
+      cleanPhone = dialCode + cleanPhone;
+    }
+
     // Estructurar Datos del Pedido (Soporta Invitado y Logueado)
     const orderData = {
       userId: currentUser ? currentUser.uid : `guest_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
       isGuest: !currentUser,
       fullName: el.fName.value.trim(),
       email: el.fEmail.value.trim(),
-      phone: el.fPhone.value.trim(),
+      phone: cleanPhone,
       cedula: el.fId.value.trim(),
       address: el.fAddress.value.trim(),
       neighborhood: el.fNeighborhood.value.trim(),
