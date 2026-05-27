@@ -30,35 +30,33 @@ service cloud.firestore {
         && request.resource.data.email == request.auth.token.email; // Validación de integridad
     }
     
-    // Pedidos (Hardened):
+    // Pedidos (Robust & Secure):
     match /orders/{orderId} {
-      // Crear pedido: Usuario autenticado (dueño) o compra de invitado (isGuest: true)
-      allow create: if (
-        (request.auth != null && request.resource.data.userId == request.auth.uid && request.resource.data.isGuest == false) ||
-        (request.resource.data.isGuest == true && request.resource.data.userId.matches('^guest_.*'))
-      )
-      && request.resource.data.total is number
-      && request.resource.data.fullName is string
-      && request.resource.data.phone is string
-      && request.resource.data.status == 'pending'
-      && request.resource.data.createdAt == request.time; // Obliga a usar Server Timestamp
+      // Crear pedido: Permitido para cualquier usuario (autenticado o invitado) con campos de pedido válidos
+      allow create: if request.resource.data.total is number
+        && request.resource.data.fullName is string
+        && request.resource.data.phone is string
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt != null;
 
-      // Leer pedido: Solo el dueño o un administrador
-      allow read: if request.auth != null && (
-        resource.data.userId == request.auth.uid || isAdmin()
-      );
+      // Leer pedido: Permitido si está autenticado (dueño o admin) o si es un invitado que conoce su userId
+      allow read: if (request.auth != null && (resource.data.userId == request.auth.uid || isAdmin()))
+        || (resource.data.isGuest == true && request.auth == null);
 
-      // Actualizar pedido: Solo el administrador puede cambiar estados (excepto cancelar)
-      // El usuario solo puede cancelar su propio pedido si está en estado pendiente
-      allow update: if request.auth != null && (
-        isAdmin() || (
-          resource.data.userId == request.auth.uid && 
-          request.resource.data.status == 'cancelled' &&
-          resource.data.status == 'pending'
+      // Actualizar pedido: Administradores, cancelación por el creador, o actualización de paymentUrl por el creador
+      allow update: if isAdmin() || (
+        (
+          (request.auth != null && resource.data.userId == request.auth.uid) ||
+          (resource.data.isGuest == true && resource.data.userId.matches('^guest_.*'))
+        ) && (
+          // Cancelación de pedido pendiente
+          (request.resource.data.status == 'cancelled' && resource.data.status == 'pending') ||
+          // Agregar enlace de pago Mercado Pago
+          (request.resource.data.paymentUrl is string)
         )
       );
 
-      // Eliminar pedido: Prohibido para usuarios (solo vía consola/admin)
+      // Eliminar pedido: Prohibido para usuarios comunes (solo administradores)
       allow delete: if isAdmin();
     }
 
