@@ -301,7 +301,19 @@ function validateField(inputEl) {
         "España": "34",
         "Chile": "56",
         "Argentina": "54",
-        "Perú": "51"
+        "Perú": "51",
+        "El Salvador": "503",
+        "Guatemala": "502",
+        "Costa Rica": "506",
+        "Honduras": "504",
+        "Nicaragua": "505",
+        "Ecuador": "593",
+        "Bolivia": "591",
+        "Paraguay": "595",
+        "Uruguay": "598",
+        "Venezuela": "58",
+        "Rep. Dominicana": "1",
+        "USA": "1"
       };
       
       let cleanPhone = val.replace(/[^\d]/g, '');
@@ -481,7 +493,19 @@ function setupColombiaDropdowns() {
           "España": "Ej: 612345678 (+34)",
           "Chile": "Ej: 912345678 (+56)",
           "Argentina": "Ej: 1112345678 (+54)",
-          "Perú": "Ej: 912345678 (+51)"
+          "Perú": "Ej: 912345678 (+51)",
+          "El Salvador": "Ej: 61234567 (+503)",
+          "Guatemala": "Ej: 51234567 (+502)",
+          "Costa Rica": "Ej: 81234567 (+506)",
+          "Honduras": "Ej: 91234567 (+504)",
+          "Nicaragua": "Ej: 81234567 (+505)",
+          "Ecuador": "Ej: 912345678 (+593)",
+          "Bolivia": "Ej: 71234567 (+591)",
+          "Paraguay": "Ej: 912345678 (+595)",
+          "Uruguay": "Ej: 91234567 (+598)",
+          "Venezuela": "Ej: 4123456789 (+58)",
+          "Rep. Dominicana": "Ej: 8091234567 (+1)",
+          "USA": "Ej: 2025550143 (+1)"
         };
         el.fPhone.placeholder = phonePlaceholders[country] || "Ej: +503 61234567 (mínimo 6 dígitos)";
       }
@@ -695,7 +719,19 @@ async function confirmOrder() {
       "España": "34",
       "Chile": "56",
       "Argentina": "54",
-      "Perú": "51"
+      "Perú": "51",
+      "El Salvador": "503",
+      "Guatemala": "502",
+      "Costa Rica": "506",
+      "Honduras": "504",
+      "Nicaragua": "505",
+      "Ecuador": "593",
+      "Bolivia": "591",
+      "Paraguay": "595",
+      "Uruguay": "598",
+      "Venezuela": "58",
+      "Rep. Dominicana": "1",
+      "USA": "1"
     };
     const rawPhone = el.fPhone.value.trim();
     let cleanPhone = rawPhone.replace(/[^\d]/g, '');
