@@ -460,10 +460,7 @@ function setupColombiaDropdowns() {
       const country = el.fCountry.value;
       localStorage.setItem(LSTORE_PREFIX + 'chk-country', country);
 
-      const wrapperSelectState = document.getElementById('state-select-wrapper');
-      const wrapperSelectCity = document.getElementById('city-select-wrapper');
-      const wrapperTextState = document.getElementById('state-text-wrapper');
-      const wrapperTextCity = document.getElementById('city-text-wrapper');
+      const manualToggle = document.getElementById('manual-location-toggle-wrapper');
 
       if (country === 'Colombia') {
         // Mostrar selectores
@@ -471,6 +468,8 @@ function setupColombiaDropdowns() {
         if (wrapperSelectCity) wrapperSelectCity.style.display = 'flex';
         if (wrapperTextState) wrapperTextState.style.display = 'none';
         if (wrapperTextCity) wrapperTextCity.style.display = 'none';
+
+        if (manualToggle) manualToggle.style.display = 'block';
 
         if (el.fStateSelect) el.fStateSelect.setAttribute('required', '');
         if (el.fCitySelect) el.fCitySelect.setAttribute('required', '');
@@ -482,6 +481,8 @@ function setupColombiaDropdowns() {
         if (wrapperSelectCity) wrapperSelectCity.style.display = 'none';
         if (wrapperTextState) wrapperTextState.style.display = 'flex';
         if (wrapperTextCity) wrapperTextCity.style.display = 'flex';
+
+        if (manualToggle) manualToggle.style.display = 'none';
 
         if (el.fStateSelect) el.fStateSelect.removeAttribute('required');
         if (el.fCitySelect) el.fCitySelect.removeAttribute('required');
@@ -502,6 +503,48 @@ function setupColombiaDropdowns() {
     };
   }
 
+  const toggleBtn = document.getElementById('btn-toggle-manual-location');
+  if (toggleBtn) {
+    toggleBtn.onclick = (e) => {
+      e.preventDefault();
+      
+      const wrapperSelectState = document.getElementById('state-select-wrapper');
+      const wrapperSelectCity = document.getElementById('city-select-wrapper');
+      const wrapperTextState = document.getElementById('state-text-wrapper');
+      const wrapperTextCity = document.getElementById('city-text-wrapper');
+      const manualToggle = document.getElementById('manual-location-toggle-wrapper');
+
+      // Ocultar selectores
+      if (wrapperSelectState) wrapperSelectState.style.display = 'none';
+      if (wrapperSelectCity) wrapperSelectCity.style.display = 'none';
+      
+      // Mostrar inputs de texto
+      if (wrapperTextState) wrapperTextState.style.display = 'flex';
+      if (wrapperTextCity) wrapperTextCity.style.display = 'flex';
+      
+      // Ocultar enlace
+      if (manualToggle) manualToggle.style.display = 'none';
+
+      // Ajustar atributos required
+      if (el.fStateSelect) el.fStateSelect.removeAttribute('required');
+      if (el.fCitySelect) el.fCitySelect.removeAttribute('required');
+      if (el.fStateText) el.fStateText.setAttribute('required', '');
+      if (el.fCityText) el.fCityText.setAttribute('required', '');
+
+      // Guardar bandera en localStorage para recordar la preferencia
+      localStorage.setItem('peloot_chk_manual_colombia', 'true');
+    };
+  }
+
+  // Al cambiar de país, resetear bandera manual si cambian a otro país
+  if (el.fCountry) {
+    el.fCountry.addEventListener('change', () => {
+      if (el.fCountry.value !== 'Colombia') {
+        localStorage.removeItem('peloot_chk_manual_colombia');
+      }
+    });
+  }
+
   // Carga inicial tras restauración de localstorage
   setTimeout(() => {
     if (el.fCountry) {
@@ -518,6 +561,12 @@ function setupColombiaDropdowns() {
           el.fCitySelect.value = savedCity;
           el.fCitySelect.dispatchEvent(new Event('change'));
         }
+      }
+
+      // Si estaba activa la escritura manual de Colombia, forzarla
+      if (el.fCountry.value === 'Colombia' && localStorage.getItem('peloot_chk_manual_colombia') === 'true') {
+        const toggleBtnEl = document.getElementById('btn-toggle-manual-location');
+        if (toggleBtnEl) toggleBtnEl.click();
       }
     }
   }, 100);
@@ -555,9 +604,10 @@ function handleGoToStep3() {
 
   // Validar campos de Paso 2
   const isColombia = el.fCountry.value === 'Colombia';
+  const isManual = localStorage.getItem('peloot_chk_manual_colombia') === 'true';
   const fieldsStep2 = [el.fAddress, el.fNeighborhood];
   
-  if (isColombia) {
+  if (isColombia && !isManual) {
     fieldsStep2.push(el.fStateSelect, el.fCitySelect);
   } else {
     fieldsStep2.push(el.fStateText, el.fCityText);
@@ -585,6 +635,7 @@ if (el.btnToStep2) el.btnToStep2.onclick = handleGoToStep2;
 if (el.btnToStep3) el.btnToStep3.onclick = handleGoToStep3;
 if (el.btnBackToStep1) el.btnBackToStep1.onclick = () => showStep(1);
 if (el.btnBackToStep2) el.btnBackToStep2.onclick = () => showStep(2);
+if (el.btnConfirm) el.btnConfirm.onclick = confirmOrder;
 
 // --- Manejo del Estado de Autenticación de Firebase (Autocompletado Opcional) ---
 onAuthStateChanged(auth, async (user) => {
@@ -635,8 +686,9 @@ async function confirmOrder() {
   if (!isStep1Valid) { showStep(1); return; }
 
   const isColombia = el.fCountry.value === 'Colombia';
+  const isManual = localStorage.getItem('peloot_chk_manual_colombia') === 'true';
   const fields2 = [el.fAddress, el.fNeighborhood];
-  if (isColombia) {
+  if (isColombia && !isManual) {
     fields2.push(el.fStateSelect, el.fCitySelect);
   } else {
     fields2.push(el.fStateText, el.fCityText);
@@ -696,8 +748,9 @@ async function confirmOrder() {
     const finalTotal = Math.round(subtotalCOP * (1 - discountPercent / 100));
 
     // Determinar Departamento y Ciudad exactos según el país
-    const stateValue = isColombia ? el.fStateSelect.value : el.fStateText.value.trim();
-    const cityValue = isColombia ? el.fCitySelect.value : el.fCityText.value.trim();
+    const isManual = localStorage.getItem('peloot_chk_manual_colombia') === 'true';
+    const stateValue = (isColombia && !isManual) ? el.fStateSelect.value : el.fStateText.value.trim();
+    const cityValue = (isColombia && !isManual) ? el.fCitySelect.value : el.fCityText.value.trim();
 
     // Formatear el teléfono de manera internacional y robusta según el país
     const COUNTRY_DIAL_CODES = {

@@ -613,6 +613,12 @@
               <div class="validation-feedback" id="val-city-select">Selecciona tu municipio</div>
             </div>
 
+            <div id="manual-location-toggle-wrapper" style="grid-column: 1 / -1; margin-top: -8px; margin-bottom: 8px;">
+              <a href="#" id="btn-toggle-manual-location" style="font-size: 0.85rem; font-weight: 700; color: var(--primary-blue); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                ✍️ ¿No encuentras tu ciudad o departamento? Escríbelo manualmente aquí
+              </a>
+            </div>
+
             <!-- Inputs de Texto Fallback (Ocultos por defecto para otros países) -->
             <div class="form-group-premium" id="state-text-wrapper" style="display: none;">
               <label for="chk-state" class="form-label-premium">Estado / Departamento <span>*</span></label>
@@ -792,7 +798,7 @@
     </div>
   </footer>
 
-  <script type="module" src="js/checkout.js?v=3.18"></script>
+  <script type="module" src="js/checkout.js?v=3.19"></script>
   <script type="module">
     import { initHeaderAndAuth } from './js/ui-init.js';
     initHeaderAndAuth();
