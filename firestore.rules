@@ -23,6 +23,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // Categorías: Lectura pública, escritura solo administradores
+    match /categories/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
     // Perfiles de Usuario: Solo el dueño o un administrador
     match /users/{userId} {
       allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
