@@ -32,8 +32,14 @@ service cloud.firestore {
     // Perfiles de Usuario: Solo el dueño o un administrador
     match /users/{userId} {
       allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      allow write: if request.auth != null && request.auth.uid == userId
+      
+      // Permitir creación y edición validando el correo del token
+      allow create, update: if request.auth != null 
+        && request.auth.uid == userId
         && request.resource.data.email == request.auth.token.email; // Validación de integridad
+        
+      // Permitir borrado si es el dueño o un administrador
+      allow delete: if request.auth != null && (request.auth.uid == userId || isAdmin());
     }
     
     // Pedidos (Robust & Secure):
