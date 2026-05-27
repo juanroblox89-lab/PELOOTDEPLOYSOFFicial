@@ -295,8 +295,24 @@ function validateField(inputEl) {
     }
 
     if (id === 'chk-phone') {
-      const cleanPhone = val.replace(/[^\d]/g, '');
+      const COUNTRY_DIAL_CODES = {
+        "Colombia": "57",
+        "México": "52",
+        "España": "34",
+        "Chile": "56",
+        "Argentina": "54",
+        "Perú": "51"
+      };
+      
+      let cleanPhone = val.replace(/[^\d]/g, '');
       const country = el.fCountry.value;
+      const dialCode = COUNTRY_DIAL_CODES[country];
+      
+      // Remover indicativo si está presente en el input del usuario para validar longitud local
+      if (dialCode && cleanPhone.startsWith(dialCode) && cleanPhone.length > dialCode.length) {
+        cleanPhone = cleanPhone.substring(dialCode.length);
+      }
+
       if (country === 'Colombia') {
         if (cleanPhone.length !== 10) {
           isValid = false;
