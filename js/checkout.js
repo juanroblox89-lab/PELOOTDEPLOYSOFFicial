@@ -316,56 +316,10 @@ function validateField(inputEl) {
     }
 
     if (id === 'chk-phone') {
-      const COUNTRY_DIAL_CODES = {
-        "Colombia": "57",
-        "México": "52",
-        "España": "34",
-        "Chile": "56",
-        "Argentina": "54",
-        "Perú": "51",
-        "El Salvador": "503",
-        "Guatemala": "502",
-        "Costa Rica": "506",
-        "Honduras": "504",
-        "Nicaragua": "505",
-        "Ecuador": "593",
-        "Bolivia": "591",
-        "Paraguay": "595",
-        "Uruguay": "598",
-        "Venezuela": "58",
-        "Rep. Dominicana": "1",
-        "USA": "1"
-      };
-      
-      let cleanPhone = val.replace(/[^\d]/g, '');
-      const country = el.fCountry.value;
-      const dialCode = COUNTRY_DIAL_CODES[country];
-      
-      // Remover indicativo si está presente en el input del usuario para validar longitud local
-      if (dialCode && cleanPhone.startsWith(dialCode) && cleanPhone.length > dialCode.length) {
-        cleanPhone = cleanPhone.substring(dialCode.length);
-      }
-
-      if (country === 'Colombia') {
-        if (cleanPhone.length !== 10) {
-          isValid = false;
-          if (feedbackEl) feedbackEl.textContent = "El número celular de Colombia debe tener exactamente 10 dígitos (Ej: 3136374267)";
-        }
-      } else if (country === 'México' || country === 'Argentina') {
-        if (cleanPhone.length !== 10) {
-          isValid = false;
-          if (feedbackEl) feedbackEl.textContent = `El número celular de ${country} debe tener 10 dígitos (Ej: 5512345678)`;
-        }
-      } else if (country === 'Perú' || country === 'Chile' || country === 'España') {
-        if (cleanPhone.length !== 9) {
-          isValid = false;
-          if (feedbackEl) feedbackEl.textContent = `El número celular de ${country} debe tener 9 dígitos`;
-        }
-      } else {
-        if (cleanPhone.length < 6) {
-          isValid = false;
-          if (feedbackEl) feedbackEl.textContent = "Ingresa un número telefónico válido (mínimo 6 dígitos)";
-        }
+      const cleanPhone = val.replace(/[^\d]/g, '');
+      if (cleanPhone.length < 6) {
+        isValid = false;
+        if (feedbackEl) feedbackEl.textContent = "Ingresa un número telefónico válido (mínimo 6 dígitos)";
       }
     }
 
