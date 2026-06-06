@@ -312,10 +312,10 @@
                     alert('Pedido cancelado con éxito.');
                     window.location.reload();
                   } catch (e) {
-                    console.error(e);
-                    alert('Error al cancelar el pedido.');
-                    btnCancel.disabled = false;
-                    btnCancel.textContent = 'Cancelar Pedido ✕';
+                     console.error(e);
+                     alert('Error al cancelar el pedido.');
+                     btnCancel.disabled = false;
+                     btnCancel.textContent = 'Cancelar Pedido ✕';
                   }
                 }
               };
@@ -336,6 +336,23 @@
               }
             });
           }
+        } else if (order.status === 'cancelled') {
+          const msgWa = `¡Hola! Mi pedido #${order.id.slice(0,8).toUpperCase()} fue cancelado. Quisiera reactivarlo o consultar.`;
+          const waUrl = `https://wa.me/3136374267?text=${encodeURIComponent(msgWa)}`;
+          
+          procBox.innerHTML = `
+            <div style="background: #FDF2F2; border: 2px solid #EF4444; padding: 20px; border-radius: 16px; color: #9B1C1C;">
+              <p style="margin-bottom: 12px; font-weight: 800; font-size: 0.95rem;">❌ ESTADO: PEDIDO CANCELADO</p>
+              <p style="margin-bottom: 20px; font-size: 0.85rem; line-height: 1.4; color: #9B1C1C;">
+                Este pedido ha sido cancelado. Si no completaste el pago dentro del límite de 6 horas, el sistema liberó el stock automáticamente. Si deseas reactivarlo, por favor contáctanos por WhatsApp.
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="${waUrl}" target="_blank" style="background: #EF4444; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 800; text-align: center; font-size: 0.9rem;">
+                  💬 Hablar con Soporte por WhatsApp
+                </a>
+              </div>
+            </div>
+          `;
         } else {
           procBox.innerHTML = `Estamos preparando tu loot épico. Pronto verás los detalles de envío.`;
         }

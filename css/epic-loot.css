@@ -1328,3 +1328,26 @@ img {
     width: 100%;
   }
 }
+
+/* Dynamic status classes for order tracking badges */
+.status-pending,
+.status-pending_payment {
+  background: var(--primary-blue-light) !important;
+  color: var(--primary-blue) !important;
+}
+
+.status-confirmed {
+  background: #D4EDDA !important;
+  color: #155724 !important;
+}
+
+.status-shipped {
+  background: #CCE5FF !important;
+  color: #004085 !important;
+}
+
+.status-cancelled {
+  background: #F8D7DA !important;
+  color: #721C24 !important;
+}
+
