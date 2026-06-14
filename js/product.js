@@ -23,7 +23,7 @@ const relatedContainer = document.getElementById("related");
 
 let quantity = 1;
 let globalSettings = null;
-const activeCurrencyCode = localStorage.getItem('peloot_currency') || 'COP';
+const activeCurrencyCode = localStorage.getItem('peloot_currency') || 'USD';
 const activeCurrency = CURRENCIES.find(c => c.code === activeCurrencyCode) || CURRENCIES[0];
 
 function formatPrice(price){
@@ -55,7 +55,7 @@ async function loadProduct() {
     // Set basic info
     img.src = product.imageUrl || product.image;
     nameEl.textContent = product.name;
-    priceEl.textContent = formatPrice(product.price);
+    priceEl.innerHTML = `<span style="color: var(--primary-blue); font-weight: 900;">${formatPrice(product.price)}</span><span style="text-decoration: line-through; color: var(--text-muted); font-size: 1.5rem; font-weight: 600; margin-left: 16px; opacity: 0.7;">${formatPrice(product.price * 2)}</span>`;
     descEl.textContent = product.description || "Este coleccionable premium está diseñado con materiales de alta calidad y fidelidad al personaje original.";
 
     const categoryEl = document.getElementById('product-category');
@@ -64,7 +64,7 @@ async function loadProduct() {
     // Sticky Bar
     const stickyPrice = document.getElementById('sticky-price');
     const stickyName = document.getElementById('sticky-name');
-    if (stickyPrice) stickyPrice.textContent = formatPrice(product.price);
+    if (stickyPrice) stickyPrice.innerHTML = `<span style="color: var(--primary-blue); font-weight: 900;">${formatPrice(product.price)}</span> <span style="text-decoration: line-through; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; opacity: 0.7;">${formatPrice(product.price * 2)}</span>`;
     if (stickyName) stickyName.textContent = product.name;
 
     // Image gallery
@@ -320,8 +320,13 @@ async function fetchReviews() {
     const snap = await getDocs(q);
     reviewsList = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     
-    // Ordenar por fecha descendente en cliente para evitar requerir índices compuestos
+    // Prioritize reviews with photos, then sort by date desc
     reviewsList.sort((a, b) => {
+      const hasImageA = a.imageUrl ? 1 : 0;
+      const hasImageB = b.imageUrl ? 1 : 0;
+      if (hasImageA !== hasImageB) {
+        return hasImageB - hasImageA;
+      }
       const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
       const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
       return dateB - dateA;
@@ -387,9 +392,10 @@ function renderReviewsList() {
   reviewsList.forEach(review => {
     const item = document.createElement('div');
     item.style = `
-      background: var(--bg-section); border-radius: var(--radius-lg); 
-      padding: 24px; display: flex; gap: 20px; align-items: flex-start; 
-      border: 1px solid var(--border-light); transition: transform 0.2s;
+      background: white; border-radius: var(--radius-md); 
+      padding: 16px; display: flex; gap: 14px; align-items: flex-start; 
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      transition: transform 0.2s;
     `;
     
     const formattedDate = formatReviewDate(review.createdAt);
@@ -401,27 +407,27 @@ function renderReviewsList() {
 
     item.innerHTML = `
       <!-- Avatar -->
-      <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-blue-light); color: var(--primary-blue); font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-transform: uppercase; border: 2px solid white; box-shadow: var(--shadow-sm); font-family: 'Poppins', sans-serif; overflow: hidden;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-blue-light); color: var(--primary-blue); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-transform: uppercase; border: 2px solid white; box-shadow: var(--shadow-sm); font-family: 'Poppins', sans-serif; overflow: hidden;">
         ${avatarImg}
         ${avatarInitials}
       </div>
       <!-- Detalles -->
       <div style="flex: 1;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
-          <h4 style="margin: 0; font-size: 1rem; color: var(--text-main); font-weight: 800; font-family: 'Poppins', sans-serif;">${review.userName}</h4>
-          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">${formattedDate}</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 6px;">
+          <h4 style="margin: 0; font-size: 0.95rem; color: var(--text-main); font-weight: 800; font-family: 'Poppins', sans-serif;">${review.userName}</h4>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">${formattedDate}</span>
         </div>
         <!-- Estrellas -->
-        <div style="color: var(--secondary-yellow); font-size: 1.1rem; margin-bottom: 8px; letter-spacing: 2px;">
+        <div style="color: var(--secondary-yellow); font-size: 0.95rem; margin-bottom: 6px; letter-spacing: 1px;">
           ${starString}
         </div>
         <!-- Comentario -->
-        <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.6; font-weight: 500; margin: 0; margin-bottom: 12px;">
+        <p style="color: var(--text-body); font-size: 0.88rem; line-height: 1.5; font-weight: 500; margin: 0; margin-bottom: 8px;">
           ${review.comment}
         </p>
         <!-- Miniatura si tiene imagen -->
         ${review.imageUrl ? `
-          <div style="width: 90px; height: 90px; border-radius: 12px; overflow: hidden; border: 2px solid white; box-shadow: var(--shadow-sm); cursor: zoom-in; display: inline-block; transition: transform 0.2s;" class="review-thumb-btn">
+          <div style="width: 70px; height: 70px; border-radius: 8px; overflow: hidden; border: 2px solid white; box-shadow: var(--shadow-sm); cursor: zoom-in; display: inline-block; transition: transform 0.2s;" class="review-thumb-btn">
             <img src="${review.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
         ` : ''}

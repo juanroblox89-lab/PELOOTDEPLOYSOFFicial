@@ -120,6 +120,7 @@
         <button class="filter-btn active" data-status="pending">Pendientes</button>
         <button class="filter-btn" data-status="confirmed">Confirmados</button>
         <button class="filter-btn" data-status="shipped">Enviados</button>
+        <button class="filter-btn" data-status="cancelled">Cancelados</button>
         <button class="filter-btn" data-status="">Todos</button>
       </div>
 
@@ -357,6 +358,13 @@
         <label for="prod-reviewUrl">URL de Reseña (TikTok, Reels, Youtube)</label>
         <input type="url" id="prod-reviewUrl" placeholder="https://www.tiktok.com/@peloot.accesorios/video/...">
         <p style="font-size:0.75rem; color:var(--text-medium); margin-top:0.3rem;">Aparecerá un botón de "Ver Reseña" en la ficha del producto.</p>
+      </div>
+
+      <p class="form-section-title">Proveedor (Dropshipping)</p>
+      <div class="form-group">
+        <label for="prod-purchaseUrl">Link de compra del proveedor (AliExpress, Amazon, etc.)</label>
+        <input type="url" id="prod-purchaseUrl" placeholder="https://es.aliexpress.com/item/...">
+        <p style="font-size:0.75rem; color:var(--text-medium); margin-top:0.3rem;">Enlace directo para comprar o reordenar este producto al proveedor de origen.</p>
       </div>
 
       <p class="form-section-title">Badges y estado</p>
@@ -752,6 +760,7 @@ function openProductModal(productId) {
   document.getElementById('prod-imageUrl').value = p.imageUrl || p.image || '';
   document.getElementById('prod-mercadoPagoUrl').value = p.mercadoPagoUrl || '';
   document.getElementById('prod-reviewUrl').value = p.reviewUrl || '';
+  document.getElementById('prod-purchaseUrl').value = p.purchaseUrl || p.supplierUrl || '';
   document.getElementById('prod-use-cat-url').checked = p.useCategoryMpUrl !== false; // Default true
   toggleMpUrlInput();
   document.getElementById('prod-active').checked = p.active !== false;
@@ -779,6 +788,7 @@ function openCreateModal() {
   document.getElementById('prod-imageUrl').value = '';
   document.getElementById('prod-mercadoPagoUrl').value = '';
   document.getElementById('prod-reviewUrl').value = '';
+  document.getElementById('prod-purchaseUrl').value = '';
   document.getElementById('prod-use-cat-url').checked = true;
   toggleMpUrlInput();
   document.getElementById('prod-active').checked = true;
@@ -874,6 +884,7 @@ document.getElementById('btn-modal-save').addEventListener('click', async () => 
     imageUrl: document.getElementById('prod-imageUrl').value.trim(),
     mercadoPagoUrl: mpUrl,
     reviewUrl: document.getElementById('prod-reviewUrl').value.trim(),
+    purchaseUrl: document.getElementById('prod-purchaseUrl').value.trim(),
     useCategoryMpUrl,
     active: document.getElementById('prod-active').checked,
     badges,
@@ -970,8 +981,23 @@ function renderOrders(orders) {
     }
     const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=Hola%20${encodeURIComponent(order.fullName||'')},%20te%20escribimos%20de%20PeLoot%20respecto%20a%20tu%20pedido%20%23${order.id.slice(0,8).toUpperCase()}` : '#';
 
-    const statusMap = { pending: '⌛ Pendiente', confirmed: '✅ Confirmado', shipped: '🚚 Enviado' };
+    const statusMap = { pending: '⌛ Pendiente', confirmed: '✅ Confirmado', shipped: '🚚 Enviado', cancelled: '❌ Cancelado' };
     
+    let paymentStatusHtml = '';
+    if (order.status === 'pending' && order.paymentStatus) {
+      let badgeStyle = 'background: #F3F4F6; color: #555;';
+      let statusText = order.paymentStatus.toUpperCase();
+      
+      if (order.paymentStatus === 'rejected') {
+        badgeStyle = 'background: #FEE2E2; color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.1);';
+        statusText = `RECHAZADO (${order.paymentStatusDetail || ''})`;
+      } else if (order.paymentStatus === 'in_process') {
+        badgeStyle = 'background: #FEF3C7; color: #D97706; border: 1px solid rgba(217, 119, 6, 0.1);';
+        statusText = 'EN REVISIÓN';
+      }
+      paymentStatusHtml = `<span class="order-status-badge" style="font-size:0.72rem; font-weight:800; padding:0.35rem 0.8rem; border-radius:99px; margin-left:8px; text-transform:uppercase; display:inline-block; vertical-align:middle; ${badgeStyle}">${statusText}</span>`;
+    }
+
     let shippingInfoHtml = '';
     if (order.status === 'shipped') {
       shippingInfoHtml = `
@@ -985,15 +1011,32 @@ function renderOrders(orders) {
       `;
     }
 
+    const orderItemsHtml = (order.items && order.items.length) 
+      ? order.items.map(i => {
+          const prodObj = allProducts.find(p => p.id === i.id);
+          const supplierLink = prodObj && prodObj.purchaseUrl 
+            ? ` <a href="${prodObj.purchaseUrl}" target="_blank" style="color:#10B981; font-weight:800; font-size:0.8rem; text-decoration:none; margin-left:8px;" title="Ver en Proveedor (AliExpress/Amazon)">🛒 Enlace Proveedor 🔗</a>` 
+            : '';
+          return `${i.name} × ${i.qty}${supplierLink}`;
+        }).join('<br>') 
+      : (() => {
+          const prodObj = allProducts.find(p => p.id === order.productId);
+          const supplierLink = prodObj && prodObj.purchaseUrl 
+            ? ` <a href="${prodObj.purchaseUrl}" target="_blank" style="color:#10B981; font-weight:800; font-size:0.8rem; text-decoration:none; margin-left:8px;" title="Ver en Proveedor (AliExpress/Amazon)">🛒 Enlace Proveedor 🔗</a>` 
+            : '';
+          return order.productName ? `${order.productName} × ${order.qty || 1}${supplierLink}` : `Peluche PeLoot × 1${supplierLink}`;
+        })();
+
     card.innerHTML = `
       <div>
         <div class="order-header">
           <span class="order-id" style="user-select:all; cursor:copy;" title="Copiar ID" onclick="navigator.clipboard.writeText('${order.id}')">#${order.id.slice(0,8).toUpperCase()}</span>
           <span class="order-status-badge ${order.status}">${statusMap[order.status] || order.status}</span>
+          ${paymentStatusHtml}
           <span class="order-date">${date}</span>
         </div>
         <div class="order-product-name">
-          ${(order.items && order.items.length) ? order.items.map(i => `${i.name} × ${i.qty}`).join('<br>') : (order.productName ? `${order.productName} × ${order.qty || 1}` : 'Peluche PeLoot × 1')}
+          ${orderItemsHtml}
         </div>
         <div class="order-price">$${convertedPrice} ${currency} <span style="font-size:0.8rem;color:var(--text-medium);font-weight:600;">(${paymentMethod})</span></div>
         <div class="order-details-grid">

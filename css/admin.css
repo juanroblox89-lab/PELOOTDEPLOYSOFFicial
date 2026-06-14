@@ -235,6 +235,7 @@ html, body {
 }
 .order-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
 .order-card.confirmed { border-color: var(--green); background: #F0FDF4; }
+.order-card.cancelled { border-color: var(--red); background: #FEF2F2; }
 .order-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .order-id { font-family: monospace; font-size: 0.85rem; color: var(--text-muted); background: #F3F4F6; padding: 0.3rem 0.6rem; border-radius: 8px; font-weight: 700; }
 .order-product-name { font-weight: 800; font-size: 1.15rem; }
@@ -243,6 +244,7 @@ html, body {
 .order-status-badge.pending { background: #FFFBEB; color: #D97706; }
 .order-status-badge.confirmed { background: #ECFDF5; color: #059669; }
 .order-status-badge.shipped { background: #EFF6FF; color: #2563EB; }
+.order-status-badge.cancelled { background: #FEE2E2; color: var(--red); }
 .order-details-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.25rem; background: #F9FAFB; padding: 1.25rem; border-radius: 16px; }
 
 .order-detail-item .detail-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.3rem; }

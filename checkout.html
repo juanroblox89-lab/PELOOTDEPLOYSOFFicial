@@ -541,13 +541,13 @@
 
             <div class="form-group-premium">
               <label for="chk-phone" class="form-label-premium">Celular / WhatsApp <span>*</span></label>
-              <input type="tel" id="chk-phone" autocomplete="tel" placeholder="Ingresa tu celular / WhatsApp" class="input-premium" required>
+              <input type="tel" id="chk-phone" autocomplete="tel" inputmode="numeric" placeholder="Ingresa tu celular / WhatsApp" class="input-premium" required>
               <div class="validation-feedback" id="val-phone">Ingresa tu número celular o WhatsApp</div>
             </div>
 
             <div class="form-group-premium" style="grid-column: 1 / -1;">
               <label for="chk-id" class="form-label-premium">Documento de Identidad (Cédula, DNI, etc.) <span>*</span></label>
-              <input type="text" id="chk-id" placeholder="Ej: 1020485932" class="input-premium" required>
+              <input type="text" id="chk-id" inputmode="numeric" placeholder="Ej: 1020485932" class="input-premium" required>
               <div class="validation-feedback" id="val-id">Requerido para el despacho y entrega segura</div>
             </div>
           </div>
@@ -622,13 +622,13 @@
             <!-- Inputs de Texto Fallback (Ocultos por defecto para otros países) -->
             <div class="form-group-premium" id="state-text-wrapper" style="display: none;">
               <label for="chk-state" class="form-label-premium">Estado / Departamento <span>*</span></label>
-              <input type="text" id="chk-state" placeholder="Ej: Antioquia" class="input-premium">
+              <input type="text" id="chk-state" autocomplete="address-level1" placeholder="Ej: Antioquia" class="input-premium">
               <div class="validation-feedback" id="val-state">Ingresa tu estado o región</div>
             </div>
 
             <div class="form-group-premium" id="city-text-wrapper" style="display: none;">
               <label for="chk-city" class="form-label-premium">Ciudad <span>*</span></label>
-              <input type="text" id="chk-city" placeholder="Ej: Medellín" class="input-premium">
+              <input type="text" id="chk-city" autocomplete="address-level2" placeholder="Ej: Medellín" class="input-premium">
               <div class="validation-feedback" id="val-city">Ingresa tu ciudad</div>
             </div>
 
@@ -646,7 +646,7 @@
 
             <div class="form-group-premium">
               <label for="chk-zip" class="form-label-premium">Código Postal</label>
-              <input type="text" id="chk-zip" autocomplete="postal-code" placeholder="Ej: 050012 (Opcional)" class="input-premium">
+              <input type="text" id="chk-zip" autocomplete="postal-code" inputmode="numeric" placeholder="Ej: 050012 (Opcional)" class="input-premium">
             </div>
 
             <div class="form-group-premium" style="grid-column: 1 / -1;">

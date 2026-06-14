@@ -44,7 +44,7 @@ try {
 }
 
 async function runTest() {
-  console.log('\x1b[36m🧸 Iniciando prueba de cancelación automática de pedidos (Límite 6 Horas)...\x1b[0m');
+  console.log('\x1b[36m🧸 Iniciando prueba de cancelación automática de pedidos (Límite 24 Horas)...\x1b[0m');
 
   const testOrderId = `test_cron_cancel_${Date.now()}`;
   const recentOrderId = `test_cron_recent_${Date.now()}`;
@@ -60,14 +60,14 @@ async function runTest() {
     process.exit(1);
   }
 
-  // Set timestamps for testing
-  const sevenHoursAgo = new Date(Date.now() - 7 * 60 * 60 * 1000); // Expired (7h old)
-  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);    // Recent (10 min old)
+  // Set timestamps for testing (24-hour limit)
+  const twentyFiveHoursAgo = new Date(Date.now() - 25 * 60 * 60 * 1000); // Expired (25h old)
+  const oneHourAgo = new Date(Date.now() - 1 * 60 * 60 * 1000);          // Recent (1h old)
 
   console.log(`\n\x1b[35m[1/4] Creando pedidos mock en Firestore...\x1b[0m`);
 
   try {
-    // A. Create expired mock order (7 hours old)
+    // A. Create expired mock order (25 hours old)
     await orderRef.set({
       userId: 'test_guest_cron',
       fullName: 'Cliente de Prueba Expirado',
@@ -85,12 +85,12 @@ async function runTest() {
       total: 69900,
       currency: 'COP',
       status: 'pending',
-      createdAt: sevenHoursAgo,
-      updatedAt: sevenHoursAgo
+      createdAt: twentyFiveHoursAgo,
+      updatedAt: twentyFiveHoursAgo
     });
-    console.log(`  ✅ Creado pedido expirado (Status: 'pending', Creado hace: 7 horas): \x1b[1m${testOrderId}\x1b[0m`);
+    console.log(`  ✅ Creado pedido expirado (Status: 'pending', Creado hace: 25 horas): \x1b[1m${testOrderId}\x1b[0m`);
 
-    // B. Create recent mock order (10 minutes old)
+    // B. Create recent mock order (1 hour old)
     await recentRef.set({
       userId: 'test_guest_cron',
       fullName: 'Cliente de Prueba Reciente',
@@ -108,10 +108,10 @@ async function runTest() {
       total: 69900,
       currency: 'COP',
       status: 'pending',
-      createdAt: tenMinutesAgo,
-      updatedAt: tenMinutesAgo
+      createdAt: oneHourAgo,
+      updatedAt: oneHourAgo
     });
-    console.log(`  ✅ Creado pedido reciente (Status: 'pending', Creado hace: 10 minutos): \x1b[1m${recentOrderId}\x1b[0m`);
+    console.log(`  ✅ Creado pedido reciente (Status: 'pending', Creado hace: 1 hora): \x1b[1m${recentOrderId}\x1b[0m`);
 
     // 2. Call handler directly (bypass local server port dependency)
     console.log(`\n\x1b[35m[2/4] Ejecutando invocación DIRECTA al handler de cancelación...\x1b[0m`);
@@ -164,12 +164,12 @@ async function runTest() {
       let testPassed = true;
 
       // Assertion A: Expired order must be 'cancelled'
-      if (expiredData.status === 'cancelled' && expiredData.cancelReason === 'payment_timeout_6h') {
+      if (expiredData.status === 'cancelled' && expiredData.cancelReason === 'payment_timeout_24h') {
         console.log(`  \x1b[32m✔ EXITO:\x1b[0m Pedido expirado #${testOrderId} fue cancelado correctamente.`);
         console.log(`    Motivo guardado: '${expiredData.cancelReason}'`);
         console.log(`    Fecha de cancelación: ${expiredData.cancelledAt?.toDate().toISOString()}`);
       } else {
-        console.error(`  \x1b[31m✘ FALLO:\x1b[0m Pedido expirado #${testOrderId} no fue cancelado. Status actual: '${expiredData.status}'`);
+        console.error(`  \x1b[31m✘ FALLO:\x1b[0m Pedido expirado #${testOrderId} no fue cancelado o motivo incorrecto. Status actual: '${expiredData.status}', cancelReason: '${expiredData.cancelReason}'`);
         testPassed = false;
       }
 
@@ -187,7 +187,7 @@ async function runTest() {
 
       if (testPassed) {
         console.log('\n\x1b[32;1m🎉 ¡PRUEBA DE CANCELACIÓN COMPLETADA CON ÉXITO! 🎉\x1b[0m');
-        console.log('\x1b[36mLa automatización del Cron de 6 horas se ejecuta y discrimina correctamente.\x1b[0m\n');
+        console.log('\x1b[36mLa automatización del Cron de 24 horas se ejecuta y discrimina correctamente.\x1b[0m\n');
         process.exit(0);
       } else {
         console.log('\n\x1b[31;1m🚨 LA PRUEBA FALLÓ. Revisa la lógica del backend.\x1b[0m\n');

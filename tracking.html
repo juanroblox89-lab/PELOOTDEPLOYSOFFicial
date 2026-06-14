@@ -278,9 +278,50 @@
           const msgWa = `¡Hola! Mi pedido es el #${order.id.slice(0,8).toUpperCase()}. Necesito ayuda con mi pago o envío.`;
           const waUrl = `https://wa.me/3136374267?text=${encodeURIComponent(msgWa)}`;
           
+          let alertBannerHtml = '';
+          
+          if (order.paymentStatus === 'rejected') {
+            const rejectionMessages = {
+              cc_rejected_insufficient_amount: "Tu saldo o límite es insuficiente para completar esta compra. Por favor, intenta con otra tarjeta o método de pago.",
+              cc_rejected_high_risk: "El pago fue rechazado por motivos de seguridad / prevención de fraudes. Intenta con otra tarjeta, usa PSE o comunícate con nosotros por WhatsApp.",
+              cc_rejected_blacklist: "Tu tarjeta no puede ser procesada (está en la lista de denegación por denuncias o robo). Intenta con otro medio de pago.",
+              cc_rejected_bad_filled_card_number: "El número de tarjeta ingresado es incorrecto. Por favor, revísalo y vuelve a intentarlo.",
+              cc_rejected_bad_filled_date: "La fecha de vencimiento de la tarjeta es incorrecta. Por favor, verifícala.",
+              cc_rejected_bad_filled_security_code: "El código de seguridad (CVV) de la tarjeta es incorrecto.",
+              cc_rejected_bad_filled_other: "Algunos datos de la tarjeta no coinciden. Por favor, revisa e intenta de nuevo.",
+              cc_rejected_card_disabled: "La tarjeta que usaste está inactiva o bloqueada para compras en línea. Por favor, actívala o usa otra tarjeta.",
+              cc_rejected_duplicated_payment: "El banco rechazó la transacción porque detectó un cobro duplicado. Espera unos minutos antes de intentar de nuevo.",
+              cc_rejected_max_attempts: "Has superado el límite de intentos permitidos con esta tarjeta. Intenta con otro medio de pago.",
+              cc_rejected_call_for_authorize: "Tu banco requiere que autorices previamente esta compra. Llama a tu banco para autorizar y vuelve a intentar.",
+              cc_rejected_invalid_installments: "El número de cuotas seleccionado no es válido para esta tarjeta.",
+              cc_rejected_time_out: "La transacción superó el tiempo límite de espera. Intenta nuevamente.",
+              rejected_high_risk: "Tu pago fue rechazado por prevención de fraudes. Te sugerimos pagar mediante PSE (débito bancario) o Efecty para confirmación inmediata.",
+              rejected_by_bank: "La operación fue rechazada por tu entidad bancaria.",
+              rejected_by_regulations: "La operación fue rechazada por regulaciones vigentes.",
+              payer_unavailable: "Tu cuenta de Mercado Pago tiene restricciones temporales. Intenta con otro medio de pago o paga como invitado.",
+              cc_rejected_other_reason: "Tu tarjeta fue rechazada por el banco emisor. Por favor, intenta con otra tarjeta o método de pago."
+            };
+            const detailMsg = rejectionMessages[order.paymentStatusDetail] || "El pago fue rechazado por el emisor. Por favor revisa tus datos o intenta con otro medio.";
+            
+            alertBannerHtml = `
+              <div style="background: #FFF5F5; border: 1.5px solid #EF4444; padding: 14px; border-radius: 12px; color: #B91C1C; font-size: 0.85rem; margin-bottom: 16px; font-weight: 700; display: flex; flex-direction: column; gap: 4px;">
+                <span>⚠️ PAGO RECHAZADO:</span>
+                <span style="font-weight: 500; opacity: 0.95;">${detailMsg}</span>
+              </div>
+            `;
+          } else if (order.paymentStatus === 'in_process') {
+            alertBannerHtml = `
+              <div style="background: #FFFDF5; border: 1.5px solid #F59E0B; padding: 14px; border-radius: 12px; color: #B45309; font-size: 0.85rem; margin-bottom: 16px; font-weight: 700; display: flex; flex-direction: column; gap: 4px;">
+                <span>⏳ PAGO BAJO REVISIÓN:</span>
+                <span style="font-weight: 500; opacity: 0.95;">Tu pago está en proceso de verificación por Mercado Pago. El sistema confirmará tu orden de forma automática una vez sea aprobado.</span>
+              </div>
+            `;
+          }
+          
           procBox.innerHTML = `
             <div style="background: #E3F2FD; border: 2px solid #2EA8FF; padding: 20px; border-radius: 16px; color: #1565C0;">
               <p style="margin-bottom: 12px; font-weight: 800; font-size: 0.95rem;">🛰️ ESTADO: PENDIENTE DE PAGO</p>
+              ${alertBannerHtml}
               <p style="margin-bottom: 20px; font-size: 0.85rem; line-height: 1.4; color: #1565C0;">
                 Tu pago se valida de forma 100% automática e instantánea. Si aún no has realizado el pago en línea de tu pedido, puedes completarlo a continuación:
               </p>
@@ -344,7 +385,7 @@
             <div style="background: #FDF2F2; border: 2px solid #EF4444; padding: 20px; border-radius: 16px; color: #9B1C1C;">
               <p style="margin-bottom: 12px; font-weight: 800; font-size: 0.95rem;">❌ ESTADO: PEDIDO CANCELADO</p>
               <p style="margin-bottom: 20px; font-size: 0.85rem; line-height: 1.4; color: #9B1C1C;">
-                Este pedido ha sido cancelado. Si no completaste el pago dentro del límite de 6 horas, el sistema liberó el stock automáticamente. Si deseas reactivarlo, por favor contáctanos por WhatsApp.
+                Este pedido ha sido cancelado. Si no completaste el pago dentro del límite de 24 horas, el sistema liberó el stock automáticamente. Si deseas reactivarlo, por favor contáctanos por WhatsApp.
               </p>
               <div style="display: flex; flex-direction: column; gap: 10px;">
                 <a href="${waUrl}" target="_blank" style="background: #EF4444; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 800; text-align: center; font-size: 0.9rem;">

@@ -130,10 +130,10 @@ img {
 .btn-primary-gaming {
   background: var(--secondary-yellow);
   color: #000;
-  padding: 14px 32px;
+  padding: 14px 30px;
   border-radius: var(--radius-lg);
   font-family: 'Poppins', 'Inter', sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   border: none;
   cursor: pointer;
@@ -154,14 +154,14 @@ img {
 .btn-secondary-gaming {
   background: white;
   color: var(--text-main);
-  padding: 14px 32px;
+  padding: 14px 30px;
   border-radius: var(--radius-lg);
   font-family: 'Poppins', 'Inter', sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   border: 2px solid #E5E7EB;
   cursor: pointer;
-  transition: var(--transition-smooth);
+  transition: var(--transition-bounce);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -177,18 +177,20 @@ img {
 .btn-blue-gaming {
   background: var(--primary-blue);
   color: white;
-  padding: 12px 28px;
+  padding: 14px 30px;
   border-radius: var(--radius-lg);
   font-family: 'Poppins', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-weight: 800;
+  font-size: 0.95rem;
   border: none;
   cursor: pointer;
-  transition: var(--transition-smooth);
+  box-shadow: 0 4px 14px var(--primary-blue-glow);
+  transition: var(--transition-bounce);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  white-space: nowrap;
 }
 .btn-blue-gaming:hover {
   transform: translateY(-2px);
@@ -225,23 +227,39 @@ img {
   width: auto;
 }
 
-/* Nav */
+/* Nav Drawer (Global) */
 .nav-gaming {
+  position: fixed;
+  top: 0;
+  left: -290px;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  flex-direction: column;
+  padding: 100px 32px 32px;
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.06);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1050;
+  gap: 0;
   display: flex;
-  align-items: center;
-  gap: 36px;
+}
+.nav-gaming.open {
+  left: 0;
 }
 .nav-gaming a {
-  font-weight: 600;
-  font-size: 0.9rem;
+  padding: 14px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: var(--text-main);
-  opacity: 0.65;
+  border-bottom: 1px solid #F5F5F5;
+  opacity: 0.85;
   transition: var(--transition-smooth);
 }
 .nav-gaming a:hover,
 .nav-gaming a.active {
   opacity: 1;
   color: var(--primary-blue);
+  padding-left: 4px;
 }
 
 /* Header Actions */
@@ -302,7 +320,7 @@ img {
 
 /* Hamburger */
 .hamburger-gaming {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 5px;
   background: none;
@@ -493,7 +511,7 @@ img {
 /* Card Image */
 .product-card-gaming .product-image-container {
   background: var(--bg-section);
-  padding: 20px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -501,9 +519,9 @@ img {
   overflow: hidden;
 }
 .product-card-gaming .product-img {
-  max-width: 85%;
-  max-height: 85%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.3s ease;
 }
 .product-card-gaming:hover .product-img {
@@ -1137,28 +1155,6 @@ img {
 
 @media (max-width: 768px) {
   .hamburger-gaming { display: flex; }
-
-  .nav-gaming {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 280px;
-    height: 100vh;
-    background: white;
-    flex-direction: column;
-    padding: 100px 32px 32px;
-    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.06);
-    transition: right 0.3s ease;
-    z-index: 1050;
-    gap: 0;
-  }
-  .nav-gaming.open { right: 0; }
-  .nav-gaming a {
-    padding: 14px 0;
-    font-size: 1rem;
-    border-bottom: 1px solid #F5F5F5;
-    opacity: 1;
-  }
 
   .header-container { height: 64px; }
   .logo-gaming img { height: 32px; }

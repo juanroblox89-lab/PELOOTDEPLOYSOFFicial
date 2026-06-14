@@ -310,6 +310,9 @@ export default async function handler(req, res) {
             await orderRef.update({
               status: 'confirmed',
               paymentId: dataId,
+              paymentStatus: 'approved',
+              paymentStatusDetail: 'accredited',
+              paymentMethodId: payment.payment_method_id || '',
               updatedAt: new Date()
             });
             console.log(`[Webhook Success] ✅ Pedido #${orderId} confirmado automáticamente.`);
@@ -321,6 +324,31 @@ export default async function handler(req, res) {
           }
         } else {
           console.warn(`[Webhook Warning] Pedido #${orderId} no existe en la base de datos.`);
+        }
+      } else if (orderId) {
+        // Registrar detalles de pagos rechazados, en proceso o cancelados
+        if (!db) {
+          console.error('[Webhook Error] Firestore Admin no disponible');
+          return res.status(500).json({ error: 'Firestore Admin not initialized' });
+        }
+
+        const orderRef = db.collection('orders').doc(orderId);
+        const orderSnap = await orderRef.get();
+
+        if (orderSnap.exists) {
+          const orderData = orderSnap.data();
+          
+          // Solo actualizar si el pedido no está ya confirmado
+          if (orderData.status !== 'confirmed') {
+            await orderRef.update({
+              paymentId: dataId,
+              paymentStatus: status, // rejected, in_process, etc.
+              paymentStatusDetail: payment.status_detail || '',
+              paymentMethodId: payment.payment_method_id || '',
+              updatedAt: new Date()
+            });
+            console.log(`[Webhook Update] ℹ️ Pedido #${orderId} actualizado con estado de pago: ${status} (${payment.status_detail}).`);
+          }
         }
       }
     }

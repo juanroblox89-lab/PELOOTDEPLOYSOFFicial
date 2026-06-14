@@ -57,8 +57,8 @@ export default async function handler(req, res) {
   const canceledOrders = [];
 
   try {
-    const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
-    trace.push(`Checking for orders created before: ${sixHoursAgo.toISOString()}`);
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    trace.push(`Checking for orders created before: ${twentyFourHoursAgo.toISOString()}`);
 
     // Query pending or pending_payment orders
     const ordersSnap = await db.collection('orders')
@@ -88,13 +88,13 @@ export default async function handler(req, res) {
         continue;
       }
 
-      // Check if the order is older than 6 hours
-      if (createdAtDate.getTime() < sixHoursAgo.getTime()) {
+      // Check if the order is older than 24 hours
+      if (createdAtDate.getTime() < twentyFourHoursAgo.getTime()) {
         const docRef = db.collection('orders').doc(doc.id);
         
         batch.update(docRef, {
           status: 'cancelled',
-          cancelReason: 'payment_timeout_6h',
+          cancelReason: 'payment_timeout_24h',
           cancelledAt: new Date(),
           updatedAt: new Date()
         });

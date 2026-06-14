@@ -81,7 +81,7 @@ const formInputs = [
 
 // --- Ayudantes de Divisa y Formato ---
 function getActiveCurrency() {
-  const code = localStorage.getItem('peloot_currency') || 'COP';
+  const code = localStorage.getItem('peloot_currency') || 'USD';
   return CURRENCIES.find(c => c.code === code) || CURRENCIES[0];
 }
 

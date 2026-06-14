@@ -9,7 +9,7 @@ const searchBtn = document.getElementById("searchBtn");
 let products = [];
 let filtered = [];
 let globalSettings = null;
-const activeCurrencyCode = localStorage.getItem('peloot_currency') || 'COP';
+const activeCurrencyCode = localStorage.getItem('peloot_currency') || 'USD';
 const activeCurrency = CURRENCIES.find(c => c.code === activeCurrencyCode) || CURRENCIES[0];
 
 function getCategoryFromSearch(search) {
@@ -61,7 +61,10 @@ function createCard(p){
       <a href="product?id=${p.id}" style="text-decoration:none; color:inherit;">
         <h4 style="font-size: 0.95rem; margin: 0 0 6px; color: var(--text-main); font-weight: 700;">${p.name}</h4>
       </a>
-      <div style="font-weight: 900; font-size: 1rem; color: var(--text-main); margin-bottom: 8px;">${formatPrice(p.price)}</div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+        <span style="font-weight: 900; font-size: 1.1rem; color: var(--primary-blue);">${formatPrice(p.price)}</span>
+        <span style="text-decoration: line-through; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; opacity: 0.75;">${formatPrice(p.price * 2)}</span>
+      </div>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 4px;">
           <span style="color: var(--secondary-yellow); font-size: 0.75rem;">★</span>
@@ -137,7 +140,35 @@ async function loadProducts() {
       products = await getAllProducts();
     }
     filtered = [...products];
-    renderProducts(filtered, isHomePage ? 4 : 0);
+
+    if (isHomePage) {
+      // Sort: 'tronco' first, then 'clashroyale' products, then others
+      filtered.sort((a, b) => {
+        if (a.id === 'tronco') return -1;
+        if (b.id === 'tronco') return 1;
+
+        const aClash = a.category === 'clashroyale';
+        const bClash = b.category === 'clashroyale';
+        if (aClash && !bClash) return -1;
+        if (!aClash && bClash) return 1;
+
+        return 0;
+      });
+    }
+
+    // Process search query parameter if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchVal = urlParams.get('search');
+    if (searchVal) {
+      if (searchInput) searchInput.value = searchVal;
+      filtered = filtered.filter(p => 
+        (p.name || "").toLowerCase().includes(searchVal.toLowerCase()) || 
+        (p.category || "").toLowerCase().includes(searchVal.toLowerCase())
+      );
+      renderProducts(filtered, 0);
+    } else {
+      renderProducts(filtered, isHomePage ? 4 : 0);
+    }
   } catch (error) {
     console.error("Error cargando productos:", error);
     container.innerHTML = "<p>Error cargando los productos.</p>";

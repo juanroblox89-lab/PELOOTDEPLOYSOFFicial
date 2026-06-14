@@ -11,7 +11,7 @@ const LEGACY_CART_KEY = "peloot_cart";
 
 let currentUser = null;
 let globalSettings = null;
-const activeCurrencyCode = localStorage.getItem('peloot_currency') || 'COP';
+const activeCurrencyCode = localStorage.getItem('peloot_currency') || 'USD';
 const activeCurrency = CURRENCIES.find(c => c.code === activeCurrencyCode) || CURRENCIES[0];
 
 onAuth(async user => { 
